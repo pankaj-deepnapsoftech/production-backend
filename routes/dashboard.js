@@ -4,6 +4,6 @@ const { isAuthenticated } = require('../middlewares/isAuthenticated');
 const { isSuper } = require('../middlewares/isSuper');
 const router = express.Router();
 
-router.post('/', isAuthenticated, isSuper, summary);
+router.post('/', isAuthenticated, summary);
 
 module.exports = router;

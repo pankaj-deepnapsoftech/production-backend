@@ -15,6 +15,7 @@ const invoiceRoutes = require("./routes/invoice");
 const productionProcessRoutes = require("./routes/productionProcess");
 const paymentRoutes = require("./routes/payment");
 const scrapRoutes = require("./routes/scrap");
+const PurchaseRoute = require("./routes/Purchases.routes")
 
 const app = express();
 
@@ -64,6 +65,7 @@ app.use("/api/invoice", invoiceRoutes);
 app.use("/api/production-process", productionProcessRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/scrap", scrapRoutes);
+app.use("/api/purchase", PurchaseRoute);
 
 app.use(globalErrorHandler);
 
