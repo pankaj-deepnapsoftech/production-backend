@@ -19,7 +19,7 @@ const productionProcessSchema = new Schema(
     },
     quantity: {
       type: Number,
-      required: [true, "Quantity is a required field"],
+      required: [true],
     },
     rm_store: {
       type: Schema.Types.ObjectId,

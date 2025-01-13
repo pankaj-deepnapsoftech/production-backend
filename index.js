@@ -16,6 +16,8 @@ const productionProcessRoutes = require("./routes/productionProcess");
 const paymentRoutes = require("./routes/payment");
 const scrapRoutes = require("./routes/scrap");
 const PurchaseRoute = require("./routes/Purchases.routes")
+const TrackProcess = require("./routes/TrackProcess.routes")
+const GardRoutes = require("./routes/Gard.routes")
 
 const app = express();
 
@@ -66,6 +68,8 @@ app.use("/api/production-process", productionProcessRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/scrap", scrapRoutes);
 app.use("/api/purchase", PurchaseRoute);
+app.use("/api/track", TrackProcess);
+app.use("/api/gard", GardRoutes);
 
 app.use(globalErrorHandler);
 

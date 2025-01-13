@@ -10,7 +10,8 @@ const productSchema = new Schema({
         type: String,
         required: [true, "Product Name is a required field"],
         minlength: [2, "Product Name should be atleast 2 characters long"],
-        maxlength: [40, "Product Name cannot exceed 40 characters"]
+        maxlength: [40, "Product Name cannot exceed 40 characters"],
+        lowerCase:true
     },
     product_id: {
         type: String,

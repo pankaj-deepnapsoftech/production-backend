@@ -10,5 +10,15 @@ const PurchasesValidation = object({
     Status:string().required("product Status must be Required"),
 })
 
+const GardValidation = object({
+    type: string().required("Type is "),
+    details: { type: String, required: true, trim: true },
+    phone: { type: String, required: true, trim: true },
+    address: { type: String, required: true, trim: true },
+    material: { type: String, required: true, trim:  true },
+    purpes: { type: String, required: true, trim: true},
+    contact_persone: { type: String, required: true, trim: true },
+    status: { type: String, required: true, trim: true },
+})
 
 module.exports = {PurchasesValidation}

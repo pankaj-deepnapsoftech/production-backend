@@ -4,12 +4,13 @@ class PurchaseController {
 
     async create(req,res){
         const data = req.body;
-        await Purchase.create(data);
+        const newData = {...data,user_id:req?.user._id}
+        await Purchase.create(newData);
         return res.status(201).json({message:"Purchase Order Gererated"})
     }
 
-    async getAll (_req,res){
-        const data = await Purchase.find({});
+    async getAll (req,res){
+        const data = await Purchase.find({user_id:req?.user._id});
         return res.status(200).json({message:"all purchases order found",data})
     }
 

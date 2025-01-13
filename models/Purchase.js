@@ -12,6 +12,7 @@ const Files = new Schema({
 });
 
 const Purchases = new Schema({
+  user_id:{type:Schema.Types.ObjectId,ref:"User",required:true},
   product_name: { type: String, required: true ,trim:true },
   product_type: { type: String, required: true,trim:true },
   price: { type: String, required: true,trim:true },
@@ -20,6 +21,6 @@ const Purchases = new Schema({
   invoice_number: { type: String,trim:true },
   invoice_file: Files,
   Status: { type: String, required: true,trim:true },
-});
+},{timestamps:true});
 
 exports.Purchase = model("purchase",Purchases)
