@@ -6,7 +6,7 @@ const GardSchema = new Schema({
   phone: { type: String, required: true, trim: true },
   address: { type: String, required: true, trim: true },
   material: { type: String,  trim:  true },
-  purpoes: { type: String,  trim: true},
+  purpose: { type: String,  trim: true},
   contact_persone: { type: String, required: true, trim: true },
   status: { type: String, required: true, trim: true },
 },{timestamps:true});

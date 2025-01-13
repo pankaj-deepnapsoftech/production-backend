@@ -10,7 +10,7 @@ class PurchaseController {
     }
 
     async getAll (req,res){
-        const data = await Purchase.find({user_id:req?.user._id});
+        const data = await Purchase.find({});
         return res.status(200).json({message:"all purchases order found",data})
     }
 
