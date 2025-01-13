@@ -9,6 +9,6 @@ const GardSchema = new Schema({
   purpoes: { type: String,  trim: true},
   contact_persone: { type: String, required: true, trim: true },
   status: { type: String, required: true, trim: true },
-});
+},{timestamps:true});
 
 exports.GardModels = model("gard", GardSchema);
