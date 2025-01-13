@@ -1,4 +1,4 @@
-const {object,string} = require("yup");
+const {object,string,number} = require("yup");
 
 
 const PurchasesValidation = object({
@@ -11,14 +11,12 @@ const PurchasesValidation = object({
 })
 
 const GardValidation = object({
-    type: string().required("Type is "),
-    details: { type: String, required: true, trim: true },
-    phone: { type: String, required: true, trim: true },
-    address: { type: String, required: true, trim: true },
-    material: { type: String, required: true, trim:  true },
-    purpes: { type: String, required: true, trim: true},
-    contact_persone: { type: String, required: true, trim: true },
-    status: { type: String, required: true, trim: true },
+    type: string().required("Type is Required"),
+    details: string().required("Details is Required"),
+    phone: string().min(10).max(12).required("Phone Number is Required"),
+    address: string().required("Address is Required"),
+    contact_persone: string().required("Contact Persone is Required"),
+    status: string().required("Status is Required"),
 })
 
-module.exports = {PurchasesValidation}
+module.exports = {PurchasesValidation,GardValidation}
