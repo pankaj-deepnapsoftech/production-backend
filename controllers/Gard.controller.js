@@ -39,7 +39,13 @@ class GardController {
 
     async delete(req,res){
         const {id} = req.params;
-        
+        const find = await GardModels.findById(id);
+        if(!find){
+            return res.status(404).json({message:"Wrong ID"});
+        };
+        await GardModels.findByIdAndDelete(id);
+        return res.status(200).json({message:"Data Deleted successful"})
+
     }
 }
 
