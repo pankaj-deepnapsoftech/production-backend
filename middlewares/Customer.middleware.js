@@ -1,8 +1,8 @@
-const User = require("../models/user");
+const { CustomerModel } = require("../models/customer.model");
 const { TryCatch, ErrorHandler } = require("../utils/error");
 const jwt = require("jsonwebtoken");
 
-exports.isAuthenticated = TryCatch(async (req, res, next) => {
+exports.isCustomerAuthenticated = TryCatch(async (req, res, next) => {
   const token = req.headers?.authorization?.split(" ")[1];
   if (!token) {
     throw new ErrorHandler("Authorization token not provided", 401);
@@ -12,7 +12,7 @@ exports.isAuthenticated = TryCatch(async (req, res, next) => {
   if (!verified) {
     throw new ErrorHandler("Session expired, login again", 401);
   }
-  const user = await User.findOne({ email: verified?.email }).populate('role');
+  const user = await CustomerModel.findOne({ email: verified?.email });
   if (!user) {
     throw new ErrorHandler("User doesn't exist", 400);
   }
@@ -25,8 +25,6 @@ exports.isAuthenticated = TryCatch(async (req, res, next) => {
     req.user = {
         email: user.email,
         _id: user._id,
-        role: user?.role,
-        isSuper: user.isSuper,
     }
     return next();
   }
