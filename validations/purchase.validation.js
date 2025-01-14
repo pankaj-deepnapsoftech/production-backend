@@ -12,10 +12,9 @@ const PurchasesValidation = object({
 
 const GardValidation = object({
     type: string().required("Type is Required"),
-    details: string().required("Details is Required"),
+    name: string().required("Name is Required"),
     phone: string().min(10).max(12).required("Phone Number is Required"),
     address: string().required("Address is Required"),
-    contact_persone: string().required("Contact Persone is Required"),
     status: string().required("Status is Required"),
 })
 
