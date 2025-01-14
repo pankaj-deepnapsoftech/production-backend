@@ -1,6 +1,10 @@
 const { CustomerModel } = require("../models/customer.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const OTP = require("../models/otp");
+const { generateOTP } = require("../utils/generateOTP");
+const { ErrorHandler } = require("../utils/error");
+const { sendEmail } = require("../utils/sendEmail");
 
 class CustomerController {
   async create(req, res) {
@@ -66,6 +70,69 @@ class CustomerController {
     })
 
   }
+
+  async getAll(req,res){
+    const data = await CustomerModel.find({});
+    return res.status(200).json({
+      message:"All customers data",data
+    })
+  }
+
+  async emailVerify(req,res){
+    const {email} = req.body;
+    if(!email){
+      return res.status(400).json({
+        message:"email is required"
+      })
+    }
+    const user = await CustomerModel.findOne({email});
+    if(!user){
+      return res.status(404).json({
+        message:"email Not exist"
+      })
+    }
+    let otp = generateOTP(4)
+    const findOTP = await OTP.findOne({email})
+    if(!findOTP){
+      await OTP.create({email,otp})
+    }else{
+      await OTP.findByIdAndUpdate(findOTP._id,otp)
+    }
+
+    sendEmail(
+        "Account Verification",
+        `
+          <strong>Dear ${user.full_name}</strong>,
+      
+          <p>Thank you for registering with us! To complete your registration and verify your account, please use the following One-Time Password (OTP): <strong>${otp}</strong></p>
+    
+          <p>This OTP is valid for 5 minutes. Do not share your OTP with anyone.</p>
+          `,
+        user?.email
+      );
+
+      res.status(200).json({
+        status: 200,
+        success: true,
+        message:
+          "User has been created successfully. OTP has been successfully sent to your email id",
+        user,
+      });
+    
+  }
+
+  // async resetPassword(req,res){
+  //   const {email,otp,newPassword} = req.body;
+  //   if (!(email || otp || newPassword)){
+  //     return res.status(400).json({
+  //       message:"OTP or new Password is required"
+  //     })
+  //   }
+
+  //   const find = await OTP.
+
+
+  // }
 }
 
 module.exports = { CustomerController };
