@@ -6,6 +6,7 @@ const CustomerValidation = object({
   email: string().email().required("Email is Required"),
   phone: string().min(10).max(12).required("Phone No. is Required"),
   password: string().min(6).max(16).required("Password is Required"),
+  type:string().required("Password is Required"),
   
   GST_NO: string()
     .matches(/^[0-9A-Z]{15}$/, "Invalid GST Number")

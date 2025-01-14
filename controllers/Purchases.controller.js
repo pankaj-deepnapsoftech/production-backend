@@ -10,13 +10,13 @@ class PurchaseController {
     }
 
     async getAll (req,res){
-        const data = await Purchase.find({});
+        const data = await Purchase.find({}).populate("user_id").populate("customer_id").populate("product_name").populate("assined_to");
         return res.status(200).json({message:"all purchases order found",data})
     }
 
     async getOne (req,res){
         const {id} = req.params;
-        const data = await Purchase.findById(id);
+        const data = await Purchase.findById(id).populate("user_id").populate("customer_id").populate("product_name").populate("assined_to");
         return res.status(200).json({message:"data found by id",data});
     }
 

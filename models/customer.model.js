@@ -5,7 +5,8 @@ const CustomerSchema = new Schema({
     full_name:{type:String,require:true,trim:true},
     email:{type:String,require:true,trim:true,unique:true,lowerCase:true},
     phone:{type:String,require:true,trim:true},
-    password:{type:String,require:true,},
+    type:{type:String,required:true,trim:true},
+    password:{type:String,require:true},
     company_name:{type:String,trim:true},
     GST_NO:{type:String,trim:true},
 },{timestamps:true});
@@ -14,7 +15,6 @@ CustomerSchema.pre("save", async function (next) {
     if(!this.isModified('password')){
         return next();
     }
-
     try {
         const hashedPass = await bcrypt.hash(this.password, 10);
         this.password = hashedPass;
