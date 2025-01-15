@@ -20,7 +20,8 @@ const Purchases = new Schema({
   Status: { type: String, required: true,trim:true,default:"Pending" },
   design_status:{type: String, required: true,trim:true,default:"In progress"},
   assined_to:{type:Schema.Types.ObjectId,ref:"User"},
-  customer_approve : {type:String,required:true,default:"Pending"}
+  customer_approve : {type:String,required:true,default:"Pending"},
+  customer_comment :{type:String,}
 },{timestamps:true});
 
 exports.Purchase = model("purchase",Purchases)
