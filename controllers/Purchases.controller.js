@@ -106,6 +106,36 @@ class PurchaseController {
     })
    
   }
+
+  async UpdateStatus(req,res){
+    const {Status} = req.body;
+    const {id} = req.params;
+    const find = await Purchase.findById(id);
+    if(!find){
+      return res.status(404).json({
+        message:"Data not found"
+      })
+    }
+    await Purchase.findByIdAndUpdate(id,{Status})
+    return res.status(201).json({
+      message:"Status Approved Successful"
+    })
+  }
+
+  async DesignApprove(req,res){
+    const {customer_approve,customer_comment} = req.body;
+    const {id} = req.params;
+    const find = await Purchase.findById(id);
+    if(!find){
+      return res.status(404).json({
+        message:"Data not found"
+      })
+    }
+    await Purchase.findByIdAndUpdate(id,{customer_approve,customer_comment})
+    return res.status(201).json({
+      message:"Image Approve Successful"
+    })
+  }
 }
 
 exports.purchaseController = new PurchaseController();

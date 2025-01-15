@@ -1,7 +1,5 @@
 const { Schema, model } = require("mongoose");
 
-
-
 const GST = new Schema({
   CGST:{type:Number,trim:true},
   SGST:{type:Number,trim:true},
