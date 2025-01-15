@@ -15,6 +15,6 @@ route.get("/customer-get",isCustomerAuthenticated,purchaseController.CustomerGet
 route.put("/update/:id",isAuthenticated,Validater(PurchasesValidation),purchaseController.update)
 route.patch("/customer-update/:id",isCustomerAuthenticated,Validater(PurchasesValidation),purchaseController.update)
 route.delete("/delete/:id",isAuthenticated,purchaseController.Delete)
-route.patch("/upload-image/:id",Imageupload.single("image"),purchaseController.Imagehandler)
+route.patch("/upload-image/:id",isAuthenticated,Imageupload.single("image"),purchaseController.Imagehandler)
 
 module.exports = route
