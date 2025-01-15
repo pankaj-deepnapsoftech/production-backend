@@ -121,11 +121,15 @@ class CustomerController {
   }
 
   async resetPassword(req,res){
-    console.log(req.body)
     const {email,otp,newPassword} = req.body;
     if (!(email || otp || newPassword)){
       return res.status(400).json({
         message:"OTP or new Password is required"
+      })
+    }
+    if(newPassword.length >= 5 ){
+      return res.status(400).json({
+        message:"Password must be at last 6 character"
       })
     }
     const find = await OTP.findOne({email})

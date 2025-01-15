@@ -136,6 +136,21 @@ class PurchaseController {
       message:"Image Approve Successful"
     })
   }
+
+  async assinedTo(req,res){
+    const {assined_to} = req.body;
+    const {id} = req.params;
+    const find = await Purchase.findById(id);
+    if(!find){
+      return res.status(404).json({
+        message:"Data not found"
+      })
+    }
+    await Purchase.findByIdAndUpdate(id,{assined_to})
+    return res.status(201).json({
+      message:"Task Assined Successful"
+    })
+  }
 }
 
 exports.purchaseController = new PurchaseController();
