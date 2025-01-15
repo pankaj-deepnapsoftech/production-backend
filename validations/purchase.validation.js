@@ -7,7 +7,6 @@ const PurchasesValidation = object({
   product_name: string().required("Product Id is Required"),
   product_type: string().required("Product Type is Required"),
   price: number().required("Price is Required"),
-  product_qty:number().required("Price is Required") ,
   assined_to:string().required("Assined to id is"),
 });
 

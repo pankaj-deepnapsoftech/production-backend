@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const { globalErrorHandler } = require("./middlewares/error");
 const { connectDB } = require("./utils/connectDB");
+const path = require("path")
 
 const authRoutes = require("./routes/user");
 const productRoutes = require("./routes/product");
@@ -55,6 +56,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use('/images', express.static(path.join(__dirname, 'tmp', 'uploads')));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/product", productRoutes);

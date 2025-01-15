@@ -87,6 +87,25 @@ class PurchaseController {
     await Purchase.findByIdAndDelete(id);
     return res.status(201).json({ message: "Purchase Order deleted" });
   }
+
+  async Imagehandler(req,res){
+    const {id} = req.params;
+    const {filename} = req.file;
+    const find = await Purchase.findById(id);
+    if(!find){
+      return res.status(404).json({
+        message:"data not found try again"
+      })
+    }
+
+    const path = `http://localhost:8069/images/${filename}`
+
+    await Purchase.findByIdAndUpdate(id,{designFile:path,design_status:"Completed"})
+    return res.status(201).json({
+      message:"file uploaded successful"
+    })
+   
+  }
 }
 
 exports.purchaseController = new PurchaseController();

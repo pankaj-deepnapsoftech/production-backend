@@ -1,13 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const Files = new Schema({
-  file: {
-    type: String,
-  },
-  file_id: {
-    type: String,
-  },
-});
+
 
 const GST = new Schema({
   CGST:{type:Number,trim:true},
@@ -21,10 +14,11 @@ const Purchases = new Schema({
   product_name: {type:Schema.Types.ObjectId,ref:"Product",required:true},
   product_type: { type: String, required: true,trim:true },
   price: { type: Number, required: true,trim:true },
-  product_qty: { type: Number, required: true,trim:true },
+  product_qty: { type: Number, required: true,trim:true ,default:0 },
   GST: GST,
-  designFile: Files,
+  designFile: {type:String},
   Status: { type: String, required: true,trim:true,default:"Pending" },
+  design_status:{type: String, required: true,trim:true,default:"In progress"},
   assined_to:{type:Schema.Types.ObjectId,ref:"User"},
   customer_approve : {type:String,required:true,default:"Pending"}
 },{timestamps:true});
