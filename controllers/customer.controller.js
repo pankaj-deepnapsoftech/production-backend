@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const OTP = require("../models/otp");
 const { generateOTP } = require("../utils/generateOTP");
-const { ErrorHandler } = require("../utils/error");
 const { sendEmail } = require("../utils/sendEmail");
 
 class CustomerController {
@@ -121,18 +120,30 @@ class CustomerController {
     
   }
 
-  // async resetPassword(req,res){
-  //   const {email,otp,newPassword} = req.body;
-  //   if (!(email || otp || newPassword)){
-  //     return res.status(400).json({
-  //       message:"OTP or new Password is required"
-  //     })
-  //   }
-
-  //   const find = await OTP.
-
-
-  // }
+  async resetPassword(req,res){
+    console.log(req.body)
+    const {email,otp,newPassword} = req.body;
+    if (!(email || otp || newPassword)){
+      return res.status(400).json({
+        message:"OTP or new Password is required"
+      })
+    }
+    const find = await OTP.findOne({email})
+    if(!find){
+      return res.status(404).json({
+        message:"Bad Request"
+      })
+    }
+    if(otp !== find.otp){
+      return res.status(404).json({
+        message:"Incorrect OTP"
+      })
+    }
+    await CustomerModel.findOneAndUpdate({email},{password:newPassword})
+    return res.status(201).json({
+      message:"New Password Created"
+    })
+  }
 }
 
 module.exports = { CustomerController };

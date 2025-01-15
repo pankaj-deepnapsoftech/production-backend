@@ -13,6 +13,7 @@ routes.post("/login",Validater(CustomerLoginValidate), CustomerController.protot
 routes.post("/change-password",isCustomerAuthenticated,Validater(CustomerPasswordValidation), CustomerController.prototype.createNewPassword)
 routes.get("/get-all",isAuthenticated,CustomerController.prototype.getAll)
 routes.post("/verify-email",CustomerController.prototype.emailVerify)
+routes.post("/reset-password",CustomerController.prototype.resetPassword)
 
 
 module.exports = routes;
