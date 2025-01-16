@@ -4,7 +4,7 @@ const { object, string,number} = require("yup");
 
 const PurchasesValidation = object({
   customer_id: string().required("Customer Id is Required"),
-  product_name: string().required("Product Id is Required"),
+  product_id: string().required("Product Id is Required"),
   product_type: string().required("Product Type is Required"),
   price: number().required("Price is Required"),
 });

@@ -98,7 +98,7 @@ class PurchaseController {
       })
     }
 
-    const path = `http://localhost:8069/images/${filename}`
+    const path = `https://inventorybackend.deepmart.shop/images/${filename}`
 
     await Purchase.findByIdAndUpdate(id,{designFile:path,design_status:"Completed"})
     return res.status(201).json({
@@ -119,36 +119,6 @@ class PurchaseController {
     await Purchase.findByIdAndUpdate(id,{Status})
     return res.status(201).json({
       message:"Status Approved Successful"
-    })
-  }
-
-  async DesignApprove(req,res){
-    const {customer_approve,customer_comment} = req.body;
-    const {id} = req.params;
-    const find = await Purchase.findById(id);
-    if(!find){
-      return res.status(404).json({
-        message:"Data not found"
-      })
-    }
-    await Purchase.findByIdAndUpdate(id,{customer_approve,customer_comment})
-    return res.status(201).json({
-      message:"Image Approve Successful"
-    })
-  }
-
-  async assinedTo(req,res){
-    const {assined_to} = req.body;
-    const {id} = req.params;
-    const find = await Purchase.findById(id);
-    if(!find){
-      return res.status(404).json({
-        message:"Data not found"
-      })
-    }
-    await Purchase.findByIdAndUpdate(id,{assined_to})
-    return res.status(201).json({
-      message:"Task Assined Successful"
     })
   }
 }

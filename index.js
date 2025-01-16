@@ -19,7 +19,8 @@ const scrapRoutes = require("./routes/scrap");
 const PurchaseRoute = require("./routes/Purchases.routes");
 const TrackProcess = require("./routes/TrackProcess.routes");
 const GardRoutes = require("./routes/Gard.routes");
-const CustomerRoutes = require("./routes/Customer.routes")
+const CustomerRoutes = require("./routes/Customer.routes");
+const AssinedRoutes = require("./routes/Assined.routes");
 
 const app = express();
 
@@ -74,6 +75,7 @@ app.use("/api/purchase", PurchaseRoute);
 app.use("/api/track", TrackProcess);
 app.use("/api/gard", GardRoutes);
 app.use("/api/customer", CustomerRoutes);
+app.use("/api/assined", AssinedRoutes);
 
 app.use(globalErrorHandler);
 
