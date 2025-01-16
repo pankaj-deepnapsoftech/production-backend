@@ -1,3 +1,4 @@
+const { AssinedModel } = require("../models/Assined-to.model");
 const { Purchase } = require("../models/Purchase");
 
 class PurchaseController {
@@ -158,6 +159,7 @@ class PurchaseController {
   }
 
   async Imagehandler(req,res){
+    const {assined_to} = req.body;
     const {id} = req.params;
     const {filename} = req.file;
     const find = await Purchase.findById(id);
@@ -167,11 +169,11 @@ class PurchaseController {
       })
     }
 
-    const path = `https://inventorybackend.deepmart.shop/images/${filename}`
+    const path = `https://localhost:8069/images/${filename}`
 
     await Purchase.findByIdAndUpdate(id,{designFile:path})
 
-    await AssinedModel.findByIdAndUpdate(req?.user?._id,{isCompleted:true})
+    await AssinedModel.findByIdAndUpdate(assined_to,{isCompleted:true})
     return res.status(201).json({
       message:"file uploaded successful"
     })
