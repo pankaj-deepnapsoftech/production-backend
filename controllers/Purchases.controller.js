@@ -9,9 +9,70 @@ class PurchaseController {
   }
 
   async getAll(req, res) {
-    const data = await Purchase.find({}).populate(
-      "user_id customer_id product_name assined_to"
-    );
+    const data = await Purchase.aggregate([
+      { $match: {} },
+      {
+        $lookup:{
+          from:"users",
+          localField:"user_id",
+          foreignField:"_id",
+          as:"user_id",
+          pipeline:[
+            {
+              $lookup:{
+                from:"user roles",
+                localField:"role",
+                foreignField:"_id",
+                as:"role",
+              }
+            },
+            {
+              $project:{
+                first_name:1,
+                last_name:1,
+                role:1,
+              }
+            }
+          ]
+        }
+      },
+      {
+        $lookup:{
+          from:"customers",
+          localField:"customer_id",
+          foreignField:"_id",
+          as:"customer_id",
+          pipeline:[
+            {
+              $project:{
+                full_name:1,
+
+              }
+            }
+          ]
+        }
+      },
+      {
+        $lookup:{
+          from:"products",
+          localField:"product_id",
+          foreignField:"_id",
+          as:"product_id",
+          pipeline:[
+            {
+              $project:{
+                name:1,
+                category:1,
+                item_type:1
+              }
+            }
+          ]
+        }
+      }
+      
+    ]);
+    
+
     return res.status(200).json({ message: "all purchases order found", data });
   }
 
@@ -108,7 +169,9 @@ class PurchaseController {
 
     const path = `https://inventorybackend.deepmart.shop/images/${filename}`
 
-    await Purchase.findByIdAndUpdate(id,{designFile:path,design_status:"Completed"})
+    await Purchase.findByIdAndUpdate(id,{designFile:path})
+
+    await AssinedModel.findByIdAndUpdate(req?.user?._id,{isCompleted:true})
     return res.status(201).json({
       message:"file uploaded successful"
     })
