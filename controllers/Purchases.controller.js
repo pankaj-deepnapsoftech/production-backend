@@ -69,6 +69,14 @@ class PurchaseController {
             }
           ]
         }
+      },
+      {
+        $lookup:{
+          from:"assineds",
+          localField:"_id",
+          foreignField:"sale_id",
+          as:"assinedto"
+        }
       }
       
     ]);
@@ -196,7 +204,7 @@ class PurchaseController {
   }
 
   async updateDesignStatus(req,res){
-    const {customer_approve,customer_design_comment,} = req.body;
+    const {customer_approve,customer_design_comment,assined_to} = req.body;
     const {id} = req.params;
     if(!customer_approve){
       return res.status(400).json({
@@ -211,6 +219,9 @@ class PurchaseController {
       })
     }
     await Purchase.findByIdAndUpdate(id,{customer_approve,customer_design_comment})
+    if(customer_approve !== "Approve" ){
+      await AssinedModel.findByIdAndUpdate(assined_to,{isCompleted:false})
+    }
     return res.status(201).json({
       message:"Status Approved Successful"
     })
