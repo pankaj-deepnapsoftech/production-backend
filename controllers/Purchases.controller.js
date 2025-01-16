@@ -75,7 +75,25 @@ class PurchaseController {
           from:"assineds",
           localField:"_id",
           foreignField:"sale_id",
-          as:"assinedto"
+          as:"assinedto",
+          pipeline:[
+           { $lookup: {
+              from:"users",
+              localField:"assined_to",
+              foreignField:"_id",
+              as:"assinedto",
+              pipeline:[
+                {
+                  $lookup: {
+                    from:"user-roles",
+                    localField:"role",
+                    foreignField:"_id",
+                    as:"role",
+                  }
+                }
+              ]
+            }}
+          ]
         }
       }
       
