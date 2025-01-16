@@ -16,5 +16,6 @@ route.put("/update/:id",isAuthenticated,Validater(PurchasesValidation),purchaseC
 route.delete("/delete/:id",isAuthenticated,purchaseController.Delete)
 route.patch("/upload-image/:id",isAuthenticated,Imageupload.single("image"),purchaseController.Imagehandler)
 route.patch("/approve-status/:id",isCustomerAuthenticated,purchaseController.UpdateStatus)
+route.patch("/image-status/:id",isCustomerAuthenticated,purchaseController.updateDesignStatus)
 
 module.exports = route

@@ -34,8 +34,8 @@ class PurchaseController {
         $lookup: {
           from: "products",
           foreignField: "_id",
-          localField: "product_name",
-          as: "product_name",
+          localField: "product_id",
+          as: "product_id",
           pipeline: [
             {
               $lookup: {
@@ -63,6 +63,14 @@ class PurchaseController {
           ],
         },
       },
+      {
+        $lookup:{
+          from:"assineds",
+          localField:"_id",
+          foreignField:"sale_id",
+          as:"empprocess"
+        }
+      }
     ]);
     return res.status(200).json({ message: "customer data found", data });
   }
@@ -120,6 +128,28 @@ class PurchaseController {
     return res.status(201).json({
       message:"Status Approved Successful"
     })
+  }
+
+  async updateDesignStatus(req,res){
+    const {customer_approve,customer_design_comment,} = req.body;
+    const {id} = req.params;
+    if(!customer_approve){
+      return res.status(400).json({
+        message:"customer is required"
+      })
+    }
+
+    const find = await Purchase.findById(id);
+    if(!find){
+      return res.status(404).json({
+        message:"Data not found"
+      })
+    }
+    await Purchase.findByIdAndUpdate(id,{customer_approve,customer_design_comment})
+    return res.status(201).json({
+      message:"Status Approved Successful"
+    })
+
   }
 }
 

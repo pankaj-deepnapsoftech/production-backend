@@ -63,4 +63,35 @@ const getAssinedTask = TryCatch(async(req,res)=>{
 })
 
 
-module.exports = {assinedTask,getAssinedTask}
+const updateAssinedTask = TryCatch(async(req,res)=>{
+    const {id} = req.params;
+    const value = req.body;
+    const data = await AssinedModel.findById(id);
+    if(!data){
+        return res.status(404).json({
+            message:"data not found"
+        })
+    }
+    await AssinedModel.findByIdAndUpdate(id,value)
+    return res.status(201).json({
+        message:"Task Assined Updated"
+    })
+})
+
+
+const DeleteAssinedTask = TryCatch(async (req,res)=>{
+    const {id} = req.params;
+    const data = await AssinedModel.findById(id);
+    if(!data){
+        return res.status(404).json({
+            message:"data not found"
+        })
+    }
+    await AssinedModel.findByIdAndDelete(id);
+    return res.status(201).json({
+        message:"Task Deleted successful"
+    })
+})
+
+
+module.exports = {assinedTask,getAssinedTask,updateAssinedTask,DeleteAssinedTask}
