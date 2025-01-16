@@ -1,6 +1,5 @@
-const { object, string,number} = require("yup");
-
-
+const { object, string, number } = require("yup");
+const { ObjectId } = require('mongodb');
 
 const PurchasesValidation = object({
   customer_id: string().required("Customer Id is Required"),
@@ -17,4 +16,22 @@ const GardValidation = object({
   status: string().required("Status is Required"),
 });
 
-module.exports = { PurchasesValidation, GardValidation };
+const assinedValidation = object({
+  sale_id: string()
+    .required("Sale ID is required")
+    .test(
+      "is-valid-objectid",
+      "Sale ID must be a valid MongoDB ObjectId",
+      (value) => ObjectId.isValid(value)
+    ),
+  assined_to: string()
+    .required("Sale ID is required")
+    .test(
+      "is-valid-objectid",
+      "Assined to ID must be a valid MongoDB ObjectId",
+      (value) => ObjectId.isValid(value)
+    ),
+  assined_process: string().required("Type is Required"),
+});
+
+module.exports = { PurchasesValidation, GardValidation, assinedValidation };
