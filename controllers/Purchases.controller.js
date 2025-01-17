@@ -64,11 +64,28 @@ class PurchaseController {
           foreignField:"_id",
           as:"product_id",
           pipeline:[
+
+            {
+              $lookup:{
+                from:"production-processes",
+                localField:"_id",
+                foreignField:"item",
+                as:"process",
+                pipeline:[
+                  {
+                    $project:{
+                      processes:1
+                    }
+                  }
+                ]
+              }
+            },
             {
               $project:{
                 name:1,
                 category:1,
-                item_type:1
+                item_type:1,
+                process:1
               }
             }
           ]

@@ -12,7 +12,7 @@ const assinedTask = TryCatch(async (req, res) => {
 const getAssinedTask = TryCatch(async (req, res) => {
   const { _id } = req.user;
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
+  const limit = parseInt(req.query.limit) || 5;
   const skip = (page - 1) * limit;
   const data = await AssinedModel.aggregate([
     {
