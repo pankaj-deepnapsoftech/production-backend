@@ -44,16 +44,16 @@ class CustomerController {
       { expiresIn: "1d" }
     );
     user.password = null;
-    return res.status(200).json({message:"Login Successful",user,token})
+    return res.status(200).json({ message: "Login Successful", user, token });
   }
 
-  async createNewPassword(req,res){
-    const {oldPassword,newPassword} = req.body;
-    const user = await CustomerModel.findById(req?.user?._id)
-    if(!user){
-        return res.status(404).json({
-            message:"Bad credintials"
-        })
+  async createNewPassword(req, res) {
+    const { oldPassword, newPassword } = req.body;
+    const user = await CustomerModel.findById(req?.user?._id);
+    if (!user) {
+      return res.status(404).json({
+        message: "Bad credintials",
+      });
     }
 
     const isMatched = await bcrypt.compare(oldPassword, user.password);
@@ -63,90 +63,94 @@ class CustomerController {
       });
     }
 
-    await CustomerModel.findByIdAndUpdate(req?.user?._id,{password:newPassword})
+    await CustomerModel.findByIdAndUpdate(req?.user?._id, {
+      password: newPassword,
+    });
     return res.status(201).json({
-        message:"New Password Created"
-    })
-
+      message: "New Password Created",
+    });
   }
 
-  async getAll(req,res){
-    const data = await CustomerModel.find({});
+  async getAll(req, res) {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+    const data = await CustomerModel.find({}).skip(skip).limit(limit).exec();
     return res.status(200).json({
-      message:"All customers data",data
-    })
+      message: "All customers data",
+      data,
+    });
   }
 
-  async emailVerify(req,res){
-    const {email} = req.body;
-    if(!email){
+  async emailVerify(req, res) {
+    const { email } = req.body;
+    if (!email) {
       return res.status(400).json({
-        message:"email is required"
-      })
+        message: "email is required",
+      });
     }
-    const user = await CustomerModel.findOne({email});
-    if(!user){
+    const user = await CustomerModel.findOne({ email });
+    if (!user) {
       return res.status(404).json({
-        message:"email Not exist"
-      })
+        message: "email Not exist",
+      });
     }
-    let otp = generateOTP(4)
-    const findOTP = await OTP.findOne({email})
-    if(!findOTP){
-      await OTP.create({email,otp})
-    }else{
-      await OTP.findByIdAndUpdate(findOTP._id,otp)
+    let otp = generateOTP(4);
+    const findOTP = await OTP.findOne({ email });
+    if (!findOTP) {
+      await OTP.create({ email, otp });
+    } else {
+      await OTP.findByIdAndUpdate(findOTP._id, otp);
     }
 
     sendEmail(
-        "Account Verification",
-        `
+      "Account Verification",
+      `
           <strong>Dear ${user.full_name}</strong>,
       
           <p>Thank you for registering with us! To complete your registration and verify your account, please use the following One-Time Password (OTP): <strong>${otp}</strong></p>
     
           <p>This OTP is valid for 5 minutes. Do not share your OTP with anyone.</p>
           `,
-        user?.email
-      );
+      user?.email
+    );
 
-      res.status(200).json({
-        status: 200,
-        success: true,
-        message:
-          "User has been created successfully. OTP has been successfully sent to your email id",
-        user,
-      });
-    
+    res.status(200).json({
+      status: 200,
+      success: true,
+      message:
+        "User has been created successfully. OTP has been successfully sent to your email id",
+      user,
+    });
   }
 
-  async resetPassword(req,res){
-    const {email,otp,newPassword} = req.body;
-    if (!(email || otp || newPassword)){
+  async resetPassword(req, res) {
+    const { email, otp, newPassword } = req.body;
+    if (!(email || otp || newPassword)) {
       return res.status(400).json({
-        message:"OTP or new Password is required"
-      })
+        message: "OTP or new Password is required",
+      });
     }
-    if(newPassword.length >= 5 ){
+    if (newPassword.length >= 5) {
       return res.status(400).json({
-        message:"Password must be at last 6 character"
-      })
+        message: "Password must be at last 6 character",
+      });
     }
-    const find = await OTP.findOne({email})
-    if(!find){
+    const find = await OTP.findOne({ email });
+    if (!find) {
       return res.status(404).json({
-        message:"Bad Request"
-      })
+        message: "Bad Request",
+      });
     }
-    if(otp !== find.otp){
+    if (otp !== find.otp) {
       return res.status(404).json({
-        message:"Incorrect OTP"
-      })
+        message: "Incorrect OTP",
+      });
     }
-    await CustomerModel.findOneAndUpdate({email},{password:newPassword})
+    await CustomerModel.findOneAndUpdate({ email }, { password: newPassword });
     return res.status(201).json({
-      message:"New Password Created"
-    })
+      message: "New Password Created",
+    });
   }
 }
 

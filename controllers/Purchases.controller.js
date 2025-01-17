@@ -10,6 +10,10 @@ class PurchaseController {
   }
 
   async getAll(req, res) {
+
+    const page = parseInt(req.query.page) || 1;  
+  const limit = parseInt(req.query.limit) || 5;  
+  const skip = (page - 1) * limit
     const data = await Purchase.aggregate([
       { $match: {} },
       {
@@ -97,7 +101,7 @@ class PurchaseController {
         }
       }
       
-    ]);
+    ]).skip(skip).limit(limit).exec();
     
 
     return res.status(200).json({ message: "all purchases order found", data });
@@ -112,6 +116,9 @@ class PurchaseController {
   }
 
   async CustomerGet(req, res) {
+    const page = parseInt(req.query.page) || 1;  
+  const limit = parseInt(req.query.limit) || 5;  
+  const skip = (page - 1) * limit
     const data = await Purchase.aggregate([
       {
         $match: {
@@ -159,7 +166,7 @@ class PurchaseController {
           as:"empprocess"
         }
       }
-    ]);
+    ]).skip(skip).limit(limit).exec();
     return res.status(200).json({ message: "customer data found", data });
   }
 
