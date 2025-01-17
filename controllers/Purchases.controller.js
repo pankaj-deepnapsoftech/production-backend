@@ -192,7 +192,7 @@ class PurchaseController {
   }
 
   async Imagehandler(req,res){
-    const {assined_to} = req.body;
+    const {assined_to,assinedto_comment} = req.body;
     const {id} = req.params;
     const {filename} = req.file;
     const find = await Purchase.findById(id);
@@ -206,7 +206,7 @@ class PurchaseController {
 
     await Purchase.findByIdAndUpdate(id,{designFile:path})
 
-    await AssinedModel.findByIdAndUpdate(assined_to,{isCompleted:true})
+    await AssinedModel.findByIdAndUpdate(assined_to,{isCompleted:true,assinedto_comment})
     return res.status(201).json({
       message:"file uploaded successful"
     })
