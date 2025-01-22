@@ -41,9 +41,26 @@ const getAssinedTask = TryCatch(async (req, res) => {
         }
       ]
     }
+   },
+   {
+    $lookup:{
+      from:"purchases",
+      localField:"sale_id",
+      foreignField:"_id",
+      as:"sale_id",
+      pipeline:[
+        {
+          $lookup:{
+            from:"products",
+            localField:"product_id",
+            foreignField:"_id",
+            as:"product_id",
+          }
+        }
+      ]
+    }
    }
-  ])
-    .skip(skip)
+  ]).skip(skip)
     .limit(limit)
     .exec();
   return res.status(200).json({ message: "data found", data });
