@@ -60,7 +60,7 @@ const getAssinedTask = TryCatch(async (req, res) => {
       ]
     }
    }
-  ]).skip(skip)
+  ]).sort({ _id: -1 }).skip(skip)
     .limit(limit)
     .exec();
   return res.status(200).json({ message: "data found", data });

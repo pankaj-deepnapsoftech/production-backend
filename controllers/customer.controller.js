@@ -75,7 +75,7 @@ class CustomerController {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
     const skip = (page - 1) * limit;
-    const data = await CustomerModel.find({}).skip(skip).limit(limit).exec();
+    const data = await CustomerModel.find({}).sort({ _id: -1 }).skip(skip).limit(limit).exec();
     return res.status(200).json({
       message: "All customers data",
       data,

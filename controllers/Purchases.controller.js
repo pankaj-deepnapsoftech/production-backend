@@ -116,7 +116,7 @@ class PurchaseController {
           ],
         },
       },
-    ])
+    ]).sort({ _id: -1 })
       .skip(skip)
       .limit(limit)
       .exec();
@@ -181,7 +181,7 @@ class PurchaseController {
           as: "empprocess",
         },
       },
-    ])
+    ]) .sort({ _id: -1 })
       .skip(skip)
       .limit(limit)
       .exec();
