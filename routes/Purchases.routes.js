@@ -17,5 +17,8 @@ route.delete("/delete/:id",isAuthenticated,purchaseController.Delete)
 route.patch("/upload-image/:id",isAuthenticated,Imageupload.single("image"),purchaseController.Imagehandler)
 route.patch("/approve-status/:id",isCustomerAuthenticated,purchaseController.UpdateStatus)
 route.patch("/image-status/:id",isCustomerAuthenticated,purchaseController.updateDesignStatus)
+route.get("/sales-graph",isAuthenticated,purchaseController.graphData)
+route.get("/all", isAuthenticated,purchaseController.All)
+route.get("/topSales",  isAuthenticated,purchaseController.getNewestSales);
 
 module.exports = route

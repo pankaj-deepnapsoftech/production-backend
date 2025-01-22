@@ -152,6 +152,25 @@ class CustomerController {
       message: "New Password Created",
     });
   }
+
+  async All(req, res) {
+    try {
+       
+        const totalCustomers = await CustomerModel.countDocuments();
+        
+      
+        res.status(200).json({
+            success: true,
+            total: totalCustomers,
+        });
+    } catch (error) {
+        console.error('Error fetching total customers:', error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while fetching the total customers.',
+        });
+    }
+}
 }
 
 module.exports = { CustomerController };

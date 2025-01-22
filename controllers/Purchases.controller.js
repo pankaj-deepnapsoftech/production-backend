@@ -274,6 +274,127 @@ class PurchaseController {
       message: "Status Approved Successful",
     });
   }
+
+  async graphData(req, res) {
+    try {
+      const purchases = await Purchase.find(
+        {},
+        "price product_qty GST createdAt"
+      );
+
+      // Aggregate sales data by month
+      const monthlySales = {};
+
+      purchases.forEach((purchase) => {
+        const month = new Date(purchase.createdAt).toLocaleString("default", {
+          month: "long",
+        });
+
+        const totalSale = purchase.price * purchase.product_qty;
+
+        const totalGST =
+          (purchase.GST.CGST || 0) +
+          (purchase.GST.SGST || 0) +
+          (purchase.GST.IGST || 0);
+
+        const totalSaleWithGST = totalSale + totalGST;
+
+        if (!monthlySales[month]) {
+          monthlySales[month] = 0;
+        }
+
+        monthlySales[month] += totalSaleWithGST;
+      });
+
+      const response = {
+        months: Object.keys(monthlySales),
+        sales: Object.values(monthlySales),
+      };
+
+      res.status(200).json(response);
+    } catch (error) {
+      console.error("Error calculating sales data:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+
+  async All(req, res) {
+    try {
+      const totalSales = await Purchase.countDocuments();
+
+      res.status(200).json({
+        success: true,
+        total: totalSales,
+      });
+    } catch (error) {
+      console.error("Error fetching total customers:", error);
+      res.status(500).json({
+        success: false,
+        message: "An error occurred while fetching the total customers.",
+      });
+    }
+  }
+
+  async getNewestSales(req, res) {
+    try {
+      const limit = 1; // Fetch only the two newest sales
+      const salesData = await Purchase.aggregate([
+        { $sort: { createdAt: -1 } }, // Sort by creation date in descending order
+        { $limit: limit }, // Limit the results to 2
+        {
+          $lookup: {
+            from: "products",
+            localField: "product_id",
+            foreignField: "_id",
+            as: "product",
+            pipeline: [
+              {
+                $lookup: {
+                  from: "production-processes",
+                  localField: "_id",
+                  foreignField: "item",
+                  as: "process",
+                  pipeline: [
+                    {
+                      $project: {
+                        processes: 1,
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $project: {
+                  name: 1,
+                  category: 1,
+                  item_type: 1,
+                  process: 1,
+                },
+              },
+            ],
+          },
+        },
+        {
+          $project: {
+            createdAt: 1,
+            product: 1,
+          },
+        },
+      ]);
+
+      return res.status(200).json({
+        success: true,
+        message: "Newest sales data retrieved successfully",
+        data: salesData,
+      });
+    } catch (error) {
+      console.error("Error fetching newest sales data:", error);
+      return res.status(500).json({
+        success: false,
+        message: "An error occurred while fetching sales data",
+      });
+    }
+  }
 }
 
 exports.purchaseController = new PurchaseController();

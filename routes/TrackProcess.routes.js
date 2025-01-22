@@ -1,9 +1,10 @@
 const { Router } = require("express");
-const { TrackProcess } = require("../controllers/TrackProcess.controller");
+const { TrackProcess, All } = require("../controllers/TrackProcess.controller");
 
 const route = Router();
 
 route.get("/track-process",TrackProcess);
+route.get("/all", All)
 
 
 

@@ -14,6 +14,7 @@ routes.post("/change-password",isCustomerAuthenticated,Validater(CustomerPasswor
 routes.get("/get-all",isAuthenticated,CustomerController.prototype.getAll)
 routes.post("/verify-email",CustomerController.prototype.emailVerify)
 routes.post("/reset-password",CustomerController.prototype.resetPassword)
+routes.get("/all", isAuthenticated, CustomerController.prototype.All)
 
 
 module.exports = routes;
