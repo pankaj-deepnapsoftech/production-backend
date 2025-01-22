@@ -225,7 +225,7 @@ class PurchaseController {
     await Purchase.findByIdAndUpdate(id, { designFile: path });
 
     await AssinedModel.findByIdAndUpdate(assined_to, {
-      isCompleted: true,
+      isCompleted: "Completed",
       assinedto_comment,
     });
     return res.status(201).json({
@@ -268,7 +268,7 @@ class PurchaseController {
       customer_design_comment,
     });
     if (customer_approve !== "Approve") {
-      await AssinedModel.findByIdAndUpdate(assined_to, { isCompleted: false });
+      await AssinedModel.findByIdAndUpdate(assined_to, { isCompleted: "Design Rejected" });
     }
     return res.status(201).json({
       message: "Status Approved Successful",
