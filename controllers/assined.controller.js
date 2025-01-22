@@ -3,7 +3,13 @@ const { TryCatch } = require("../utils/error");
 
 const assinedTask = TryCatch(async (req, res) => {
   const data = req.body;
-  await AssinedModel.create(data);
+  const find = await AssinedModel.findOne({sale_id:data.sale_id,assined_process:data.assined_process.toLowerCase().trim()})
+  if(find){
+    return res.status(400).json({
+      message:"task is already assined"
+    })
+  }
+  await AssinedModel.create({...data,assined_by:req?.user._id});
   return res.status(201).json({
     message: "Task assined Successful",
   });
@@ -18,47 +24,24 @@ const getAssinedTask = TryCatch(async (req, res) => {
     {
       $match: { assined_to: _id },
     },
-    {
-      $lookup: {
-        from: "purchases",
-        localField: "sale_id",
-        foreignField: "_id",
-        as: "sale_id",
-        pipeline: [
-          {
-            $lookup: {
-              from: "users",
-              localField: "user_id",
-              foreignField: "_id",
-              as: "user_id",
-              pipeline: [
-                {
-                  $project: {
-                    first_name: 1,
-                    last_name: 1,
-                  },
-                },
-              ],
-            },
-          },
-          {
-            $lookup: {
-              from: "products",
-              localField: "product_id",
-              foreignField: "_id",
-              as: "product_id",
-              pipeline: [
-                {
-                  $project: {
-                    name: 1,
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
+   {
+    $lookup:{
+      from:"users",
+      foreignField:"_id",
+      localField:"assined_by",
+      as:"assined_by",
+      pipeline:[
+        {
+          $lookup:{
+            from:"user-roles",
+            foreignField:"_id",
+            localField:"role",
+            as:"role",
+          }
+        }
+      ]
+    }
+   }
   ])
     .skip(skip)
     .limit(limit)
