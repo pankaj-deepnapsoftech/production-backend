@@ -95,9 +95,27 @@ const DeleteAssinedTask = TryCatch(async (req, res) => {
   });
 });
 
+const UpdateDesignStatus = TryCatch(async(req,res)=>{
+  const {id} = req.params;
+  const {isCompleted} = req.body;
+
+  const data = await AssinedModel.findById(id).exec();
+  if(!data){
+    return res.status(400).json({
+      message:"Wrong id"
+    })
+  }
+  await AssinedModel.findByIdAndUpdate(id,{isCompleted})
+  return res.status(200).json({
+    message:"Design Aprovel submit Successful"
+  })
+
+})
+
 module.exports = {
   assinedTask,
   getAssinedTask,
   updateAssinedTask,
   DeleteAssinedTask,
+  UpdateDesignStatus
 };
