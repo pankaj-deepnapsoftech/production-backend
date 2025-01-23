@@ -125,10 +125,117 @@ class PurchaseController {
   }
 
   async getOne(req, res) {
-    const { id } = req.params;
-    const data = await Purchase.findById(id).populate(
-      "user_id customer_id product_name assined_to"
-    );
+    const id = req.user._id
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+    const data = await Purchase.aggregate([
+      { $match: {_id:id} },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "user_id",
+          pipeline: [
+            {
+              $lookup: {
+                from: "user roles",
+                localField: "role",
+                foreignField: "_id",
+                as: "role",
+              },
+            },
+            {
+              $project: {
+                first_name: 1,
+                last_name: 1,
+                role: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "customers",
+          localField: "customer_id",
+          foreignField: "_id",
+          as: "customer_id",
+          pipeline: [
+            {
+              $project: {
+                full_name: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "product_id",
+          foreignField: "_id",
+          as: "product_id",
+          pipeline: [
+            {
+              $lookup: {
+                from: "production-processes",
+                localField: "_id",
+                foreignField: "item",
+                as: "process",
+                pipeline: [
+                  {
+                    $project: {
+                      processes: 1,
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $project: {
+                name: 1,
+                category: 1,
+                item_type: 1,
+                process: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "assineds",
+          localField: "_id",
+          foreignField: "sale_id",
+          as: "assinedto",
+          pipeline: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "assined_to",
+                foreignField: "_id",
+                as: "assinedto",
+                pipeline: [
+                  {
+                    $lookup: {
+                      from: "user-roles",
+                      localField: "role",
+                      foreignField: "_id",
+                      as: "role",
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    ]).sort({ _id: -1 })
+      .skip(skip)
+      .limit(limit)
+      .exec();
     return res.status(200).json({ message: "data found by id", data });
   }
 
