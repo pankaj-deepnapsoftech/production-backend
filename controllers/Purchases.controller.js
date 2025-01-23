@@ -116,7 +116,8 @@ class PurchaseController {
           ],
         },
       },
-    ]).sort({ _id: -1 })
+    ])
+      .sort({ _id: -1 })
       .skip(skip)
       .limit(limit)
       .exec();
@@ -125,12 +126,12 @@ class PurchaseController {
   }
 
   async getOne(req, res) {
-    const id = req.user._id
+    const id = req.user._id;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
     const skip = (page - 1) * limit;
     const data = await Purchase.aggregate([
-      { $match: {_id:id} },
+      { $match: { _id: id } },
       {
         $lookup: {
           from: "users",
@@ -232,7 +233,8 @@ class PurchaseController {
           ],
         },
       },
-    ]).sort({ _id: -1 })
+    ])
+      .sort({ _id: -1 })
       .skip(skip)
       .limit(limit)
       .exec();
@@ -288,7 +290,8 @@ class PurchaseController {
           as: "empprocess",
         },
       },
-    ]) .sort({ _id: -1 })
+    ])
+      .sort({ _id: -1 })
       .skip(skip)
       .limit(limit)
       .exec();
@@ -375,7 +378,9 @@ class PurchaseController {
       customer_design_comment,
     });
     if (customer_approve !== "Approve") {
-      await AssinedModel.findByIdAndUpdate(assined_to, { isCompleted: "Design Rejected" });
+      await AssinedModel.findByIdAndUpdate(assined_to, {
+        isCompleted: "Design Rejected",
+      });
     }
     return res.status(201).json({
       message: "Status Approved Successful",
@@ -503,64 +508,96 @@ class PurchaseController {
     }
   }
 
-  async uploadPDF(req,res){
+  async uploadPDF(req, res) {
     const file = req.file;
-    const {id} = req.params;
-    if(!file){
+    const { id } = req.params;
+    if (!file) {
       return res.status(404).json({
-        message:"file not found"
-      })
+        message: "file not found",
+      });
     }
 
     const data = await Purchase.findById(id);
-    if(!data){
+    if (!data) {
       return res.status(404).json({
-        message:"data not found"
-      })
+        message: "data not found",
+      });
     }
-    await Purchase.findByIdAndUpdate(id,{invoice:file.path,paymet_status:"Pending"})
+    await Purchase.findByIdAndUpdate(id, {
+      invoice: file.path,
+      paymet_status: "Pending",
+    });
     return res.status(200).json({
-      message:"file uploaded successful"
-    })
+      message: "file uploaded successful",
+    });
   }
 
-  async uploadPaymentSS(req,res){
+  async uploadPaymentSS(req, res) {
     const file = req.file;
-    const {id} = req.params;
+    const { id } = req.params;
 
-    if(!file){
+    if (!file) {
       return res.status(404).json({
-        message:"file not found"
-      })
+        message: "file not found",
+      });
     }
 
     const data = await Purchase.findById(id);
-    if(!data){
+    if (!data) {
       return res.status(404).json({
-        message:"data not found"
-      })
+        message: "data not found",
+      });
     }
-    await Purchase.findByIdAndUpdate(id,{customer_pyement_ss:file.path,paymet_status:"Paied",payment_verify:false})
+    await Purchase.findByIdAndUpdate(id, {
+      customer_pyement_ss: file.path,
+      paymet_status: "Paied",
+      payment_verify: false,
+    });
     return res.status(200).json({
-      message:"file uploaded successful"
-    })
-
+      message: "file uploaded successful",
+    });
   }
 
-  async VerifyPayement(req,res){
-    const {id} = req.params;
-    const {payment_verify} = req.body;
+  async VerifyPayement(req, res) {
+    const { id } = req.params;
+    const { payment_verify } = req.body;
 
     const data = await Purchase.findById(id);
-    if(!data){
+    if (!data) {
       return res.status(404).json({
-        message:"data not found"
-      })
+        message: "data not found",
+      });
     }
-    await Purchase.findByIdAndUpdate(id,{payment_verify})
+    await Purchase.findByIdAndUpdate(id, { payment_verify });
     return res.status(200).json({
-      message:"file uploaded successful"
-    })
+      message: "Payment verified Successful",
+    });
+  }
+
+  async Dispatch(req, res) {
+    const { id } = req.params;
+    const { tracking_id, tracking_web } = req.body;
+
+    if (!tracking_web.trim() || !tracking_id.trim()) {
+      return res.status(404).json({
+        message: "Tracking Id and Tracking Website is required",
+      });
+    }
+
+    const data = await Purchase.findById(id);
+    if (!data) {
+      return res.status(404).json({
+        message: "data not found",
+      });
+    }
+    await Purchase.findByIdAndUpdate(id, {
+      tracking_id,
+      tracking_web,
+      product_status: "Dispatch",
+    });
+    return res.status(200).json({
+      message: "Product Dispatch",
+    });
   }
 }
 
