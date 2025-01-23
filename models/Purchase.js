@@ -18,7 +18,12 @@ const Purchases = new Schema({
   Status: { type: String, required: true,trim:true,default:"Pending" },
   customer_approve : {type:String,required:true,default:"Pending"},
   comment :{type:String,trim:true},
-  customer_design_comment : {type:String,trim:true}
+  customer_design_comment : {type:String,trim:true},
+  invoice:{type:String},
+  customer_pyement_ss:{type:String},
+  customer_order_ss:{type:String},
+  product_status:{type:String,enum:["Dispatch","Delivered"]},
+  amount_status:{type:String}
 },{timestamps:true});
 
 exports.Purchase = model("purchase",Purchases)
