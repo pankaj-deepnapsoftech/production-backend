@@ -175,7 +175,7 @@ class CustomerController {
   }
 
   async updateCustomer(req,res) {
-    const {id} = req.query;
+    const {id} = req.params;
     const {full_name,email,phone,type,company_name,GST_NO} = req.body;
     
     const user = await CustomerModel.findById(id);

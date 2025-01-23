@@ -15,6 +15,7 @@ routes.get("/get-all",isAuthenticated,CustomerController.prototype.getAll)
 routes.post("/verify-email",CustomerController.prototype.emailVerify)
 routes.post("/reset-password",CustomerController.prototype.resetPassword)
 routes.get("/all", isAuthenticated, CustomerController.prototype.All)
+routes.patch("/update/:id", isAuthenticated, CustomerController.prototype.updateCustomer)
 
 
 module.exports = routes;
