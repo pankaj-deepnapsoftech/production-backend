@@ -23,7 +23,11 @@ const Purchases = new Schema({
   customer_pyement_ss:{type:String},
   customer_order_ss:{type:String},
   product_status:{type:String,enum:["Dispatch","Delivered"]},
-  amount_status:{type:String}
+  paymet_status:{type:String},
+  payment_verify:{type:Boolean},
+  tracking_id:{type:String},
+  tracking_web:{type:String}
+
 },{timestamps:true});
 
 exports.Purchase = model("purchase",Purchases)

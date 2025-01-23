@@ -307,3 +307,67 @@ exports.markDone = TryCatch(async (req, res) => {
     message: "Production process has been marked done successfully",
   });
 });
+
+exports.getAccountantData = TryCatch(async (req,res) => {
+  const data = await ProductionProcess.aggregate([
+    {
+      $match:{
+        status:"completed"
+      }
+    },
+    {
+      $lookup:{
+        from:"purchases",
+        localField:"item",
+        foreignField:"product_id",
+        as:"item",
+        pipeline:[
+          {
+            $lookup:{
+              from:"products",
+              localField:"product_id",
+              foreignField:"_id",
+              as:"product_id"
+            }
+          },
+          {
+            $lookup:{
+              from:"customers",
+              localField:"customer_id",
+              foreignField:"_id",
+              as:"customer_id"
+            }
+          },
+          {
+            $lookup:{
+              from:"users",
+              localField:"user_id",
+              foreignField:"_id",
+              as:"user_id",
+              pipeline:[
+                {
+                  $lookup:{
+                    from:"user-roles",
+                    localField:"role",
+                    foreignField:"_id",
+                    as:"role",
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      $project:{
+        status:1,
+        item:1
+      }
+    }
+  ])
+  return res.status(200).json({
+    message:"data",
+    data
+  })
+})

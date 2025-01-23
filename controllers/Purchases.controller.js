@@ -502,6 +502,7 @@ class PurchaseController {
       });
     }
   }
+
 }
 
 exports.purchaseController = new PurchaseController();

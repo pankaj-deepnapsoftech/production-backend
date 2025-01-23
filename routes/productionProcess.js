@@ -7,13 +7,16 @@ const {
   remove,
   all,
   markDone,
+  getAccountantData,
 } = require("../controllers/process");
 const router = express.Router();
 
+router.get("/accountant-data", getAccountantData);
 router.post("/", isAuthenticated, create);
 router.get("/all", isAuthenticated, all);
 router.get("/done/:_id", isAuthenticated, markDone);
-router.route("/:_id")
+router
+  .route("/:_id")
   .get(isAuthenticated, details)
   .put(isAuthenticated, update)
   .delete(isAuthenticated, remove);
