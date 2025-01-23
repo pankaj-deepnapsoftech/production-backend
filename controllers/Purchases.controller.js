@@ -523,6 +523,45 @@ class PurchaseController {
       message:"file uploaded successful"
     })
   }
+
+  async uploadPaymentSS(req,res){
+    const file = req.file;
+    const {id} = req.params;
+
+    if(!file){
+      return res.status(404).json({
+        message:"file not found"
+      })
+    }
+
+    const data = await Purchase.findById(id);
+    if(!data){
+      return res.status(404).json({
+        message:"data not found"
+      })
+    }
+    await Purchase.findByIdAndUpdate(id,{customer_pyement_ss:file.path,paymet_status:"Paied",payment_verify:false})
+    return res.status(200).json({
+      message:"file uploaded successful"
+    })
+
+  }
+
+  async VerifyPayement(req,res){
+    const {id} = req.params;
+    const {payment_verify} = req.body;
+
+    const data = await Purchase.findById(id);
+    if(!data){
+      return res.status(404).json({
+        message:"data not found"
+      })
+    }
+    await Purchase.findByIdAndUpdate(id,{payment_verify})
+    return res.status(200).json({
+      message:"file uploaded successful"
+    })
+  }
 }
 
 exports.purchaseController = new PurchaseController();
