@@ -20,5 +20,6 @@ route.patch("/image-status/:id",isCustomerAuthenticated,purchaseController.updat
 route.get("/sales-graph",isAuthenticated,purchaseController.graphData)
 route.get("/all", isAuthenticated,purchaseController.All)
 route.get("/topSales",  isAuthenticated,purchaseController.getNewestSales);
+route.post("/upload-invoice/:id",isAuthenticated, Imageupload.single("invoice"),purchaseController.uploadPDF);
 
 module.exports = route

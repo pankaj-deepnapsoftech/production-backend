@@ -503,6 +503,26 @@ class PurchaseController {
     }
   }
 
+  async uploadPDF(req,res){
+    const file = req.file;
+    const {id} = req.params;
+    if(!file){
+      return res.status(404).json({
+        message:"file not found"
+      })
+    }
+
+    const data = await Purchase.findById(id);
+    if(!data){
+      return res.status(404).json({
+        message:"data not found"
+      })
+    }
+    await Purchase.findByIdAndUpdate(id,{invoice:file.path,paymet_status:"Pending",payment_verify:false})
+    return res.status(200).json({
+      message:"file uploaded successful"
+    })
+  }
 }
 
 exports.purchaseController = new PurchaseController();
