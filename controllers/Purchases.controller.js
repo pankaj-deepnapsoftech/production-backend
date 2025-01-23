@@ -518,7 +518,7 @@ class PurchaseController {
         message:"data not found"
       })
     }
-    await Purchase.findByIdAndUpdate(id,{invoice:file.path,paymet_status:"Pending",payment_verify:false})
+    await Purchase.findByIdAndUpdate(id,{invoice:file.path,paymet_status:"Pending"})
     return res.status(200).json({
       message:"file uploaded successful"
     })
