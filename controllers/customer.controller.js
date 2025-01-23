@@ -75,7 +75,11 @@ class CustomerController {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
     const skip = (page - 1) * limit;
-    const data = await CustomerModel.find({}).sort({ _id: -1 }).skip(skip).limit(limit).exec();
+    const data = await CustomerModel.find({})
+      .sort({ _id: -1 })
+      .skip(skip)
+      .limit(limit)
+      .exec();
     return res.status(200).json({
       message: "All customers data",
       data,
@@ -155,22 +159,37 @@ class CustomerController {
 
   async All(req, res) {
     try {
-       
-        const totalCustomers = await CustomerModel.countDocuments();
-        
-      
-        res.status(200).json({
-            success: true,
-            total: totalCustomers,
-        });
+      const totalCustomers = await CustomerModel.countDocuments();
+
+      res.status(200).json({
+        success: true,
+        total: totalCustomers,
+      });
     } catch (error) {
-        console.error('Error fetching total customers:', error);
-        res.status(500).json({
-            success: false,
-            message: 'An error occurred while fetching the total customers.',
-        });
+      console.error("Error fetching total customers:", error);
+      res.status(500).json({
+        success: false,
+        message: "An error occurred while fetching the total customers.",
+      });
     }
-}
+  }
+
+  async updateCustomer(req,res) {
+    const {id} = req.query;
+    const {full_name,email,phone,type,company_name,GST_NO} = req.body;
+    
+    const user = await CustomerModel.findById(id);
+    if(!user){
+      return res.status(404).json({
+        message:"user not found"
+      })
+    }
+    await CustomerModel.findByIdAndUpdate(id,{full_name,email,phone,type,company_name,GST_NO});
+    return res.status(200).json({
+      message:"Customer Update Successful"
+    })
+
+  }
 }
 
 module.exports = { CustomerController };
