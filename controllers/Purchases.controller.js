@@ -523,8 +523,9 @@ class PurchaseController {
         message: "data not found",
       });
     }
+    const path = `https://inventorybackend.deepmart.shop/images/${filename}`;
     await Purchase.findByIdAndUpdate(id, {
-      invoice: file.path,
+      invoice: path,
       paymet_status: "Pending",
     });
     return res.status(200).json({
@@ -548,8 +549,10 @@ class PurchaseController {
         message: "data not found",
       });
     }
+
+    const path = `https://inventorybackend.deepmart.shop/images/${filename}`;
     await Purchase.findByIdAndUpdate(id, {
-      customer_pyement_ss: file.path,
+      customer_pyement_ss: path,
       paymet_status: "Paied",
       payment_verify: false,
     });
