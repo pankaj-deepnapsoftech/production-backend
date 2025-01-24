@@ -447,66 +447,6 @@ class PurchaseController {
     }
   }
 
-  async getNewestSales(req, res) {
-    try {
-      const limit = 1; // Fetch only the two newest sales
-      const salesData = await Purchase.aggregate([
-        { $sort: { createdAt: -1 } }, // Sort by creation date in descending order
-        { $limit: limit }, // Limit the results to 2
-        {
-          $lookup: {
-            from: "products",
-            localField: "product_id",
-            foreignField: "_id",
-            as: "product",
-            pipeline: [
-              {
-                $lookup: {
-                  from: "production-processes",
-                  localField: "_id",
-                  foreignField: "item",
-                  as: "process",
-                  pipeline: [
-                    {
-                      $project: {
-                        processes: 1,
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $project: {
-                  name: 1,
-                  category: 1,
-                  item_type: 1,
-                  process: 1,
-                },
-              },
-            ],
-          },
-        },
-        {
-          $project: {
-            createdAt: 1,
-            product: 1,
-          },
-        },
-      ]);
-
-      return res.status(200).json({
-        success: true,
-        message: "Newest sales data retrieved successfully",
-        data: salesData,
-      });
-    } catch (error) {
-      console.error("Error fetching newest sales data:", error);
-      return res.status(500).json({
-        success: false,
-        message: "An error occurred while fetching sales data",
-      });
-    }
-  }
 
   async uploadPDF(req, res) {
     const { filename } = req.file;
@@ -580,6 +520,8 @@ class PurchaseController {
   async Dispatch(req, res) {
     const { id } = req.params;
     const { tracking_id, tracking_web } = req.body;
+    console.log(req.body);
+    
 
     if (!tracking_web?.trim() || !tracking_id?.trim()) {
       return res.status(404).json({
