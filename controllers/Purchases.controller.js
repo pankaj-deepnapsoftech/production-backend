@@ -511,7 +511,7 @@ class PurchaseController {
   async uploadPDF(req, res) {
     const { filename } = req.file;
     const { id } = req.params;
-    if (!file) {
+    if (!filename) {
       return res.status(404).json({
         message: "file not found",
       });
@@ -537,7 +537,7 @@ class PurchaseController {
     const { filename } = req.file;
     const { id } = req.params;
 
-    if (!file) {
+    if (!filename) {
       return res.status(404).json({
         message: "file not found",
       });
@@ -581,7 +581,7 @@ class PurchaseController {
     const { id } = req.params;
     const { tracking_id, tracking_web } = req.body;
 
-    if (!tracking_web.trim() || !tracking_id.trim()) {
+    if (!tracking_web?.trim() || !tracking_id?.trim()) {
       return res.status(404).json({
         message: "Tracking Id and Tracking Website is required",
       });

@@ -57,7 +57,7 @@ route.post(
 );
 route.post(
   "/payement-image/:id",
-  isAuthenticated,
+  isCustomerAuthenticated,
   Imageupload.single("payment"),
   purchaseController.uploadPaymentSS
 );
