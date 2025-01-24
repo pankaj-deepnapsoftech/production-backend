@@ -509,7 +509,7 @@ class PurchaseController {
   }
 
   async uploadPDF(req, res) {
-    const file = req.file;
+    const { filename } = req.file;
     const { id } = req.params;
     if (!file) {
       return res.status(404).json({
@@ -534,7 +534,7 @@ class PurchaseController {
   }
 
   async uploadPaymentSS(req, res) {
-    const file = req.file;
+    const { filename } = req.file;
     const { id } = req.params;
 
     if (!file) {
