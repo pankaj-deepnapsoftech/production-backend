@@ -49,23 +49,24 @@ route.patch(
 route.get("/sales-graph", isAuthenticated, purchaseController.graphData);
 route.get("/all", isAuthenticated, purchaseController.All);
 route.get("/topSales", isAuthenticated, purchaseController.getNewestSales);
-route.post(
+route.patch(
   "/upload-invoice/:id",
   isAuthenticated,
   Imageupload.single("invoice"),
   purchaseController.uploadPDF
 );
-route.post(
+route.patch(
   "/payement-image/:id",
   isCustomerAuthenticated,
   Imageupload.single("payment"),
   purchaseController.uploadPaymentSS
 );
-route.post(
+route.patch(
   "/verify-payement/:id",
   isAuthenticated,
   purchaseController.VerifyPayement
 );
-route.post("/dispatch/:id",isAuthenticated,purchaseController.Dispatch)
+route.patch("/dispatch/:id",isAuthenticated,purchaseController.Dispatch)
+route.patch("/delivery",isCustomerAuthenticated,purchaseController.Delivered)
 
 module.exports = route;

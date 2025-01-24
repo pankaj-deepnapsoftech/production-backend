@@ -602,6 +602,33 @@ class PurchaseController {
       message: "Product Dispatch",
     });
   }
+
+  async Delivered(req,res) {
+    const { filename } = req.file;
+    const { id } = req.params;
+
+    if (!filename) {
+      return res.status(404).json({
+        message: "file not found",
+      });
+    }
+
+    const data = await Purchase.findById(id);
+    if (!data) {
+      return res.status(404).json({
+        message: "data not found",
+      });
+    }
+
+    const path = `https://inventorybackend.deepmart.shop/images/${filename}`;
+    await Purchase.findByIdAndUpdate(id, {
+      customer_order_ss: path,
+      product_status: "Delivered",
+    });
+    return res.status(200).json({
+      message: "file uploaded successful",
+    });
+  }
 }
 
 exports.purchaseController = new PurchaseController();
