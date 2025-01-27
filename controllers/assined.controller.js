@@ -107,7 +107,7 @@ const UpdateDesignStatus = TryCatch(async(req,res)=>{
   }
   await AssinedModel.findByIdAndUpdate(id,{isCompleted})
   return res.status(200).json({
-    message:"Design Aprovel submit Successful"
+    message:"Status changed :)"
   })
 
 })

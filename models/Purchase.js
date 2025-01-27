@@ -1,10 +1,5 @@
 const { Schema, model } = require("mongoose");
 
-const GST = new Schema({
-  CGST:{type:Number,trim:true},
-  SGST:{type:Number,trim:true},
-  IGST:{type:Number,trim:true},
-})
 
 const Purchases = new Schema({
   user_id:{type:Schema.Types.ObjectId,ref:"User",required:true},
@@ -13,7 +8,7 @@ const Purchases = new Schema({
   product_type: { type: String, required: true,trim:true },
   price: { type: Number, required: true,trim:true },
   product_qty: { type: Number, required: true,trim:true ,default:0 },
-  GST: GST,
+  GST: { type: Number, required: true,trim:true },
   designFile: {type:String},
   Status: { type: String, required: true,trim:true,default:"Pending" },
   customer_approve : {type:String,required:true,default:"Pending"},
@@ -26,7 +21,8 @@ const Purchases = new Schema({
   paymet_status:{type:String},
   payment_verify:{type:Boolean},
   tracking_id:{type:String},
-  tracking_web:{type:String}
+  tracking_web:{type:String},
+  bom_id:{type:Schema.Types.ObjectId,ref:"BOM"},
 
 },{timestamps:true});
 

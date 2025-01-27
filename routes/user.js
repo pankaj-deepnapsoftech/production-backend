@@ -21,7 +21,7 @@ const { isAllowed } = require("../middlewares/isAllowed");
 const router = express.Router();
 
 router.post("/", create);
-router.get("/all", isAuthenticated, isSuper, all);
+router.get("/all", isAuthenticated, all);
 router.post("/verify", verifyOTP, verifyUser);
 router.post("/resend-otp", resendOtp);
 router

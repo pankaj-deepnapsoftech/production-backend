@@ -5,6 +5,7 @@ const BOMScrapMaterial = require("../models/bom-scrap-material");
 const ProductionProcess = require("../models/productionProcess");
 const Product = require("../models/product");
 const { TryCatch, ErrorHandler } = require("../utils/error");
+const { Purchase } = require("../models/Purchase");
 
 exports.create = TryCatch(async (req, res) => {
   const {
@@ -19,6 +20,8 @@ exports.create = TryCatch(async (req, res) => {
     scrap_materials,
     other_charges,
   } = req.body;
+
+  const { id } = req.params;
 
   let insuffientStockMsg = "";
 
@@ -98,6 +101,8 @@ exports.create = TryCatch(async (req, res) => {
 
     bom.raw_materials = bom_raw_materials;
     await bom.save();
+
+    await Purchase.findByIdAndUpdate(id, { bom_id: bom._id });
   }
 
   let bom_scrap_materials;

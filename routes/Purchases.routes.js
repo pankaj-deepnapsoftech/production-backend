@@ -17,7 +17,7 @@ route.post(
   purchaseController.create
 );
 route.get("/getAll", isAuthenticated, purchaseController.getAll);
-route.get("/get/:id", isAuthenticated, purchaseController.getOne);
+route.get("/getOne", isAuthenticated, purchaseController.getOne);
 route.get(
   "/customer-get",
   isCustomerAuthenticated,

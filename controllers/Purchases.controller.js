@@ -131,7 +131,7 @@ class PurchaseController {
     const limit = parseInt(req.query.limit) || 5;
     const skip = (page - 1) * limit;
     const data = await Purchase.aggregate([
-      { $match: { _id: id } },
+      { $match: { user_id: id } },
       {
         $lookup: {
           from: "users",
@@ -390,7 +390,7 @@ class PurchaseController {
   async graphData(req, res) {
     try {
       const purchases = await Purchase.find(
-        {},
+        { payment_verify: true },  
         "price product_qty GST createdAt"
       );
 
@@ -432,7 +432,7 @@ class PurchaseController {
 
   async All(req, res) {
     try {
-      const totalSales = await Purchase.countDocuments();
+      const totalSales = await Purchase.countDocuments({ payment_verify: true });
 
       res.status(200).json({
         success: true,
@@ -571,6 +571,8 @@ class PurchaseController {
       message: "file uploaded successful",
     });
   }
+
 }
+
 
 exports.purchaseController = new PurchaseController();
