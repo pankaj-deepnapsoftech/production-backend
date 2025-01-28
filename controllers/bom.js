@@ -21,6 +21,7 @@ exports.create = TryCatch(async (req, res) => {
     sale_id,
   } = req.body;
 
+  console.log(sale_id);
   let insuffientStockMsg = "";
 
   if (
