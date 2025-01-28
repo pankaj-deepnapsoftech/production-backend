@@ -9,7 +9,7 @@ const routes = Router();
 routes.post("/create",Validater(assinedValidation),isAuthenticated,assinedTask);
 routes.get("/get-assined",isAuthenticated,getAssinedTask);
 routes.patch("/update/:id",isAuthenticated,updateAssinedTask);
-routes.patch("/delete/:id",isAuthenticated,DeleteAssinedTask)
+routes.delete("/delete/:id",isAuthenticated,DeleteAssinedTask)
 routes.patch("/update-status/:id",isAuthenticated,UpdateDesignStatus)
 
 module.exports = routes;

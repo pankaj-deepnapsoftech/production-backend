@@ -5,7 +5,6 @@ const BOMScrapMaterial = require("../models/bom-scrap-material");
 const ProductionProcess = require("../models/productionProcess");
 const Product = require("../models/product");
 const { TryCatch, ErrorHandler } = require("../utils/error");
-const { Purchase } = require("../models/Purchase");
 
 exports.create = TryCatch(async (req, res) => {
   const {
@@ -20,8 +19,6 @@ exports.create = TryCatch(async (req, res) => {
     scrap_materials,
     other_charges,
   } = req.body;
-
-  const { id } = req.params;
 
   let insuffientStockMsg = "";
 
@@ -86,7 +83,7 @@ exports.create = TryCatch(async (req, res) => {
     creator: req.user._id,
     other_charges,
   });
-
+  console.log("raw material",raw_materials)
   if (raw_materials) {
     const bom_raw_materials = await Promise.all(
       raw_materials.map(async (material) => {
@@ -98,11 +95,11 @@ exports.create = TryCatch(async (req, res) => {
         return createdMaterial._id;
       })
     );
-
+    
     bom.raw_materials = bom_raw_materials;
+  //  console.log(bom.raw_materials);
     await bom.save();
-
-    await Purchase.findByIdAndUpdate(id, { bom_id: bom._id });
+   // console.log("bomraw", createdMaterial)
   }
 
   let bom_scrap_materials;
@@ -596,7 +593,7 @@ exports.unapprovedRawMaterialsForAdmin = TryCatch(async (req, res) => {
         },
       },
     });
-
+   console.log(unapprovedProducts);
   const unapprovedRawMaterials = unapprovedProducts.flatMap((prod) => {
     const rm = prod.bom.raw_materials.filter(
       (i) => i.item._id.toString() === prod.item.toString()

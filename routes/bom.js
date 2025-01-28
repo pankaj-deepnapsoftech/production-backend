@@ -5,7 +5,7 @@ const { isAllowed } = require('../middlewares/isAllowed');
 const { isSuper } = require('../middlewares/isSuper');
 const router = express.Router();
 
-router.post('/:id', isAuthenticated, isAllowed, create);
+router.post('/', isAuthenticated, isAllowed, create);
 router.get('/all', all);
 router.get('/unapproved', isAuthenticated, isSuper, unapproved);
 router.get('/unapproved/raw-materials', isAuthenticated, isSuper, unapprovedRawMaterialsForAdmin);
