@@ -101,7 +101,35 @@ class PurchaseController {
           }
         ]
       }
-     }
+     },
+     {
+      $lookup: {
+        from: "assineds",
+        localField: "_id",
+        foreignField: "sale_id",
+        as: "assinedto",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "assined_to",
+              foreignField: "_id",
+              as: "assinedto",
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "user-roles",
+                    localField: "role",
+                    foreignField: "_id",
+                    as: "role",
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
     ])
       .sort({ _id: -1 })
       .skip(skip)
