@@ -56,6 +56,14 @@ const getAssinedTask = TryCatch(async (req, res) => {
             foreignField:"_id",
             as:"product_id",
           }
+        },
+        {
+          $lookup:{
+            from:"boms",
+            localField:"_id",
+            foreignField:"sale_id",
+            as:"bom"
+          }
         }
       ]
     }
