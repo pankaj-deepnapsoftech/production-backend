@@ -18,6 +18,7 @@ exports.create = TryCatch(async (req, res) => {
     total_cost,
     scrap_materials,
     other_charges,
+    sale_id,
   } = req.body;
 
   let insuffientStockMsg = "";
@@ -82,8 +83,9 @@ exports.create = TryCatch(async (req, res) => {
     approved: req.user.isSuper,
     creator: req.user._id,
     other_charges,
+    sale_id,
   });
-  console.log("raw material",raw_materials)
+  
   if (raw_materials) {
     const bom_raw_materials = await Promise.all(
       raw_materials.map(async (material) => {

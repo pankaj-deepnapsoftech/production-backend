@@ -72,6 +72,10 @@ const bomSchema = new Schema(
       type: Number,
       required: [true, "Total cost is a required field"],
     },
+    sale_id:{
+      type: Schema.Types.ObjectId,
+      ref: "Purchase",
+    }
   },
   {
     timestamps: true,
