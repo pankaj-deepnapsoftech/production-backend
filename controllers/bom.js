@@ -21,7 +21,6 @@ exports.create = TryCatch(async (req, res) => {
     sale_id,
   } = req.body;
 
-  console.log(sale_id);
   let insuffientStockMsg = "";
 
   if (
@@ -596,7 +595,7 @@ exports.unapprovedRawMaterialsForAdmin = TryCatch(async (req, res) => {
         },
       },
     });
-   console.log(unapprovedProducts);
+  
   const unapprovedRawMaterials = unapprovedProducts.flatMap((prod) => {
     const rm = prod.bom.raw_materials.filter(
       (i) => i.item._id.toString() === prod.item.toString()
@@ -710,3 +709,4 @@ exports.approveRawMaterial = TryCatch(async (req, res) => {
     message: "Raw material has been approved successfully",
   });
 });
+
