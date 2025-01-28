@@ -147,79 +147,94 @@ class PurchaseController {
     const data = await Purchase.aggregate([
       { $match: { user_id: id } },
       {
-        $lookup: {
-          from: "users",
-          localField: "user_id",
-          foreignField: "_id",
-          as: "user_id",
-          pipeline: [
+        $lookup:{
+          from:"boms",
+          localField:"_id",
+          foreignField:"sale_id",
+          as:"boms",
+          pipeline:[
             {
-              $lookup: {
-                from: "user roles",
-                localField: "role",
-                foreignField: "_id",
-                as: "role",
-              },
-            },
-            {
-              $project: {
-                first_name: 1,
-                last_name: 1,
-                role: 1,
-              },
-            },
-          ],
-        },
-      },
-      {
-        $lookup: {
-          from: "customers",
-          localField: "customer_id",
-          foreignField: "_id",
-          as: "customer_id",
-          pipeline: [
-            {
-              $project: {
-                full_name: 1,
-              },
-            },
-          ],
-        },
-      },
-      {
-        $lookup: {
-          from: "products",
-          localField: "product_id",
-          foreignField: "_id",
-          as: "product_id",
-          pipeline: [
-            {
-              $lookup: {
-                from: "production-processes",
-                localField: "_id",
-                foreignField: "item",
-                as: "process",
-                pipeline: [
+              $lookup:{
+                from:"production-processes",
+                foreignField:"bom",
+                localField:"_id",
+                as:"production_processes",
+                pipeline:[
                   {
-                    $project: {
-                      processes: 1,
-                    },
-                  },
-                ],
-              },
+                    $project:{
+                      processes:1
+                    }
+  
+                  }
+                ]
+              }
             },
             {
-              $project: {
-                name: 1,
-                category: 1,
-                item_type: 1,
-                process: 1,
-              },
+              $project:{
+                is_production_started:1,
+                production_processes:1,
+                bom_name:1,
+              }
+            }
+          ]
+        }
+       },
+       {
+        $lookup:{
+          from:"users",
+          localField:"user_id",
+          foreignField:"_id",
+          as:"user_id",
+          pipeline:[
+            {
+              $lookup:{
+                from:"user-roles",
+                foreignField:"_id",
+                localField:"role",
+                as:"role"
+              }
             },
-          ],
-        },
-      },
-      {
+            {
+              $project:{
+                first_name:1,
+                role:1
+              }
+            }
+          ]
+        }
+       },
+       {
+        $lookup:{
+          from:"customers",
+          localField:"customer_id",
+          foreignField:"_id",
+          as:"customer_id",
+          pipeline:[
+            {
+              $project:{
+                full_name:1,
+              }
+            }
+          ]
+        }
+       },
+       {
+        $lookup:{
+          from:"products",
+          localField:"product_id",
+          foreignField:"_id",
+          as:"product_id",
+          pipeline:[
+            {
+              $project:{
+                name:1,
+                price:1
+              }
+            }
+          ]
+        }
+       },
+       {
         $lookup: {
           from: "assineds",
           localField: "_id",
@@ -273,24 +288,8 @@ class PurchaseController {
           as: "product_id",
           pipeline: [
             {
-              $lookup: {
-                from: "production-processes",
-                foreignField: "item",
-                localField: "_id",
-                as: "process",
-                pipeline: [
-                  {
-                    $project: {
-                      processes: 1,
-                    },
-                  },
-                ],
-              },
-            },
-            {
               $project: {
                 name: 1,
-                process: 1,
               },
             },
           ],
@@ -304,6 +303,39 @@ class PurchaseController {
           as: "empprocess",
         },
       },
+      {
+        $lookup:{
+          from:"boms",
+          localField:"_id",
+          foreignField:"sale_id",
+          as:"boms",
+          pipeline:[
+            {
+              $lookup:{
+                from:"production-processes",
+                foreignField:"bom",
+                localField:"_id",
+                as:"production_processes",
+                pipeline:[
+                  {
+                    $project:{
+                      processes:1
+                    }
+  
+                  }
+                ]
+              }
+            },
+            {
+              $project:{
+                is_production_started:1,
+                production_processes:1,
+                bom_name:1,
+              }
+            }
+          ]
+        }
+       },
     ])
       .sort({ _id: -1 })
       .skip(skip)
