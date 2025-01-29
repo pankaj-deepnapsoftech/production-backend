@@ -421,6 +421,21 @@ exports.getAccountantData = TryCatch(async (req,res) => {
                     ]
                   }
                 },
+                {
+                  $lookup:{
+                    from:"products",
+                    localField:"product_id",
+                    foreignField:"_id",
+                    as:"product_id",
+                    pipeline:[
+                      {
+                        $project:{
+                          name:1
+                        }
+                      }
+                    ]
+                  }
+                },
               ]
             }
           },
