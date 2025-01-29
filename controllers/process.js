@@ -317,43 +317,117 @@ exports.getAccountantData = TryCatch(async (req,res) => {
     },
     {
       $lookup:{
-        from:"purchases",
-        localField:"item",
-        foreignField:"product_id",
-        as:"item",
+        from:"users",
+        localField:"creator",
+        foreignField:"_id",
+        as:"creator",
         pipeline:[
           {
             $lookup:{
-              from:"products",
-              localField:"product_id",
+              from:"user-roles",
+              localField:"role",
               foreignField:"_id",
-              as:"product_id"
-            }
-          },
-          {
-            $lookup:{
-              from:"customers",
-              localField:"customer_id",
-              foreignField:"_id",
-              as:"customer_id"
-            }
-          },
-          {
-            $lookup:{
-              from:"users",
-              localField:"user_id",
-              foreignField:"_id",
-              as:"user_id",
+              as:"role",
               pipeline:[
                 {
-                  $lookup:{
-                    from:"user-roles",
-                    localField:"role",
-                    foreignField:"_id",
-                    as:"role",
+                  $project:{
+                    role:1
                   }
                 }
               ]
+            }
+          },
+          {
+            $project:{
+              role:1,
+              first_name:1
+            }
+          }
+        ]
+      }
+    },
+    {
+      $lookup:{
+        from:"products",
+        localField:"item",
+        foreignField:"_id",
+        as:"item",
+        pipeline:[
+          {
+            $project:{
+              name:1
+            }
+          }
+        ]
+      }
+    },
+    {
+      $lookup:{
+        from:"boms",
+        localField:"bom",
+        foreignField:"_id",
+        as:"bom",
+        pipeline:[
+          {
+            $lookup:{
+              from:"purchases",
+              localField:"sale_id",
+              foreignField:"_id",
+              as:"sale_id",
+              pipeline:[
+                {
+                  $lookup:{
+                    from:"users",
+                    foreignField:"_id",
+                    localField:"user_id",
+                    as:"user_id",
+                    pipeline:[
+                      {
+                        $lookup:{
+                          from:"user-roles",
+                          localField:"role",
+                          foreignField:"_id",
+                          as:"role",
+                          pipeline:[
+                            {
+                              $project:{
+                                role:1
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        $project:{
+                          role:1,
+                          first_name:1
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  $lookup:{
+                    from:"customers",
+                    localField:"customer_id",
+                    foreignField:"_id",
+                    as:"customer_id",
+                    pipeline:[
+                      {
+                        $project:{
+                          full_name:1
+                        }
+                      }
+                    ]
+                  }
+                },
+              ]
+            }
+          },
+         
+          {
+            $project:{
+              sale_id:1
             }
           }
         ]
@@ -361,10 +435,14 @@ exports.getAccountantData = TryCatch(async (req,res) => {
     },
     {
       $project:{
+        creator:1,
+        item:1,
+        bom:1,
         status:1,
-        item:1
+        
       }
     }
+   
   ])
   return res.status(200).json({
     message:"data",
