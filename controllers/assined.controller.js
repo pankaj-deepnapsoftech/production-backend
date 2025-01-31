@@ -118,12 +118,48 @@ const UpdateDesignStatus = TryCatch(async(req,res)=>{
     message:"Status changed :)"
   })
 
-})
+});
+
+const CountTotal = TryCatch(async (req,res) => {
+  const { _id } = req.user;
+  try {
+    const count = await AssinedModel.aggregate([
+     
+      {
+        $match: {
+          $or: [
+            { assined_to: _id },  
+            { assined_by: _id }  
+          ]
+        }
+      },
+      {
+        $group: {
+          _id: "$isCompleted",   
+          count: { $sum: 1 }     
+        }
+      },
+     {
+        $project: {
+          _id: 0,              
+          status: "$_id",       
+          count: 1             
+        }
+      }
+    ]);
+
+    res.json(count);  
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server Error' });
+  }
+});
 
 module.exports = {
   assinedTask,
   getAssinedTask,
   updateAssinedTask,
   DeleteAssinedTask,
-  UpdateDesignStatus
+  UpdateDesignStatus,
+  CountTotal
 };
