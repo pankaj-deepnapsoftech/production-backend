@@ -18,12 +18,11 @@ const storeSchema = new Schema(
     address_line1: {
       type: String,
       required: [true, "Address Line 1 is a required field"],
-      minlength: [10, "Address Line 1 should be atleast 10 characters long"],
-      maxlength: [500, "Address Line 1 cannot exceed 500 characters"],
+     
     },
     address_line2: {
       type: String,
-      maxlength: [500, "Address Line 2 cannot exceed 500 characters"],
+     
     },
     pincode: {
       type: Number,

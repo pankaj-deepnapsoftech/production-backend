@@ -5,20 +5,31 @@ const { ErrorHandler, TryCatch } = require("../utils/error");
 const { checkStoreCsvValidity } = require("../utils/checkStoreCsvValidity");
 
 exports.create = TryCatch(async (req, res) => {
+  
   const storeDetails = req.body;
+  
   if (!storeDetails) {
     throw new ErrorHandler("Please provide all the fields", 400);
   }
 
-  const store = await Store.create({ ...storeDetails, approved: req.user.isSuper });
-
+  try {
+    const store = await Store.create({ ...storeDetails, approved: req.user.isSuper });
   res.status(200).json({
     status: 200,
     success: true,
     message: "Store has been added successfully",
     store,
   });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      success: false,
+      message: "Something went wrong!",
+   
+    });
+  }
 });
+
 exports.update = TryCatch(async (req, res) => {
   const { id } = req.params;
   const storeDetails = req.body;

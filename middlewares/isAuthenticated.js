@@ -28,7 +28,7 @@ exports.isAuthenticated = TryCatch(async (req, res, next) => {
         role: user?.role,
         isSuper: user.isSuper,
     }
-   // console.log(req.user);
+  
     return next();
   }
   throw new ErrorHandler("Session expired, login again", 401);
