@@ -3,16 +3,16 @@ require("dotenv").config({ path: `.env.development` });
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
   auth: {
     user: process.env.EMAIL_ID,
     pass: process.env.EMAIL_PASSWORD,
   },
 });
 
+
 exports.sendEmail = async (sub, msg, recipientEmail) => {
+
+  console.log("check mail")
   const mailOptions = {
     from: process.env.EMAIL_ID,
     to: recipientEmail,
@@ -28,6 +28,8 @@ exports.sendEmail = async (sub, msg, recipientEmail) => {
 
   try {
     const info = await transporter.sendMail(mailOptions);
+    console.log("mail send successful")
   } catch (error) {
+    console.log(error)
   }
 };

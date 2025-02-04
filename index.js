@@ -37,6 +37,7 @@ const allowedOrigins = [
   "http://localhost:3001",
   "http://localhost:5173",
   "https://inventory.deepmart.shop",
+  "https://rtpas.deepmart.shop",
 ];
 
 const corsOptions = {
