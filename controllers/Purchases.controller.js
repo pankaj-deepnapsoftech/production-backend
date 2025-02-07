@@ -376,7 +376,7 @@ class PurchaseController {
       });
     }
 
-    const path = `https://inventorybackend.deepmart.shop/images/${filename}`;
+    const path = `https://rtpasbackend.deepmart.shop/images/${filename}`;
 
     await Purchase.findByIdAndUpdate(id, { designFile: path });
 
