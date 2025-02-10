@@ -45,6 +45,7 @@ exports.create = TryCatch(async (req, res) => {
     throw new ErrorHandler(`Negative quantities are not allowed`, 400);
   }
 
+ 
   await Promise.all(
     raw_materials.map(async (material) => {
       const isProdExists = await Product.findById(material.item);
@@ -71,6 +72,13 @@ exports.create = TryCatch(async (req, res) => {
     comments,
     cost,
   });
+
+  const existingBOM = await BOM.findOne({ bom_name });
+
+  if (existingBOM) {
+    return res.status(400).json({ message: "BOM name already exists." });
+  }
+
 
   const bom = await BOM.create({
     processes,

@@ -64,6 +64,29 @@ const getAssinedTask = TryCatch(async (req, res) => {
             foreignField:"sale_id",
             as:"bom"
           }
+        },  
+        {
+          $lookup:{
+            from:"customers",
+            localField:"customer_id",
+            foreignField:"_id",
+            as:"customer_id"
+          }
+        },
+        {
+          $lookup:{
+            from:"users",
+            localField:"user_id",
+            foreignField:"_id",
+            as:"user_id",
+            pipeline:[
+              {
+                $project:{
+                  first_name:1
+                }
+              }
+            ]
+          }
         }
       ]
     }

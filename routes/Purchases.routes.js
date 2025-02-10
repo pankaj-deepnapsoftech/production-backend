@@ -13,7 +13,7 @@ const route = Router();
 route.post(
   "/create",
   isAuthenticated,
-  Validater(PurchasesValidation),
+  Imageupload.single("productFile"),
   purchaseController.create
 );
 route.get("/getAll", isAuthenticated, purchaseController.getAll);

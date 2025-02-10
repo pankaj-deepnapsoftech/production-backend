@@ -3,10 +3,26 @@ const { Purchase } = require("../models/Purchase");
 
 class PurchaseController {
   async create(req, res) {
-    const data = req.body;
-    const newData = { ...data, user_id: req?.user._id };
-    await Purchase.create(newData);
-    return res.status(201).json({ message: "Purchase Order Gererated" });
+    try {
+      const data = req.body;
+      const { filename } = req?.file || null;
+      const productFilePath = filename
+        ? `https://rtpasbackend.deepmart.shop/images/${filename}`
+        : null;
+
+      const newData = {
+        ...data,
+        user_id: req?.user._id,
+        productFile: productFilePath, 
+      };
+
+      await Purchase.create(newData);
+
+      return res.status(201).json({ message: "Purchase Order Generated" });
+    } catch (error) {
+      console.error("Error creating purchase:", error);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
   }
 
   async getAll(req, res) {
@@ -14,122 +30,121 @@ class PurchaseController {
     const limit = parseInt(req.query.limit) || 5;
     const skip = (page - 1) * limit;
     const data = await Purchase.aggregate([
-     {
-      $lookup:{
-        from:"boms",
-        localField:"_id",
-        foreignField:"sale_id",
-        as:"boms",
-        pipeline:[
-          {
-            $lookup:{
-              from:"production-processes",
-              foreignField:"bom",
-              localField:"_id",
-              as:"production_processes",
-              pipeline:[
-                {
-                  $project:{
-                    processes:1
-                  }
-
-                }
-              ]
-            }
-          },
-          {
-            $project:{
-              is_production_started:1,
-              production_processes:1,
-              bom_name:1,
-            }
-          }
-        ]
-      }
-     },
-     {
-      $lookup:{
-        from:"users",
-        localField:"user_id",
-        foreignField:"_id",
-        as:"user_id",
-        pipeline:[
-          {
-            $lookup:{
-              from:"user-roles",
-              foreignField:"_id",
-              localField:"role",
-              as:"role"
-            }
-          },
-          {
-            $project:{
-              first_name:1,
-              role:1
-            }
-          }
-        ]
-      }
-     },
-     {
-      $lookup:{
-        from:"customers",
-        localField:"customer_id",
-        foreignField:"_id",
-        as:"customer_id",
-        pipeline:[
-          {
-            $project:{
-              full_name:1,
-            }
-          }
-        ]
-      }
-     },
-     {
-      $lookup:{
-        from:"products",
-        localField:"product_id",
-        foreignField:"_id",
-        as:"product_id",
-        pipeline:[
-          {
-            $project:{
-              name:1,
-              price:1
-            }
-          }
-        ]
-      }
-     },
-     {
-      $lookup: {
-        from: "assineds",
-        localField: "_id",
-        foreignField: "sale_id",
-        as: "assinedto",
-        pipeline: [
-          {
-            $lookup: {
-              from: "users",
-              localField: "assined_to",
-              foreignField: "_id",
-              as: "assinedto",
-              pipeline: [
-                {
-                  $lookup: {
-                    from: "user-roles",
-                    localField: "role",
-                    foreignField: "_id",
-                    as: "role",
+      {
+        $lookup: {
+          from: "boms",
+          localField: "_id",
+          foreignField: "sale_id",
+          as: "boms",
+          pipeline: [
+            {
+              $lookup: {
+                from: "production-processes",
+                foreignField: "bom",
+                localField: "_id",
+                as: "production_processes",
+                pipeline: [
+                  {
+                    $project: {
+                      processes: 1,
+                    },
                   },
-                },
-              ],
+                ],
+              },
             },
-          },
-        ],
+            {
+              $project: {
+                is_production_started: 1,
+                production_processes: 1,
+                bom_name: 1,
+              },
+            },
+          ],
+        },
       },
-    },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "user_id",
+          pipeline: [
+            {
+              $lookup: {
+                from: "user-roles",
+                foreignField: "_id",
+                localField: "role",
+                as: "role",
+              },
+            },
+            {
+              $project: {
+                first_name: 1,
+                role: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "customers",
+          localField: "customer_id",
+          foreignField: "_id",
+          as: "customer_id",
+          pipeline: [
+            {
+              $project: {
+                full_name: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "product_id",
+          foreignField: "_id",
+          as: "product_id",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+                price: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "assineds",
+          localField: "_id",
+          foreignField: "sale_id",
+          as: "assinedto",
+          pipeline: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "assined_to",
+                foreignField: "_id",
+                as: "assinedto",
+                pipeline: [
+                  {
+                    $lookup: {
+                      from: "user-roles",
+                      localField: "role",
+                      foreignField: "_id",
+                      as: "role",
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
     ])
       .sort({ _id: -1 })
       .skip(skip)
@@ -147,94 +162,93 @@ class PurchaseController {
     const data = await Purchase.aggregate([
       { $match: { user_id: id } },
       {
-        $lookup:{
-          from:"boms",
-          localField:"_id",
-          foreignField:"sale_id",
-          as:"boms",
-          pipeline:[
+        $lookup: {
+          from: "boms",
+          localField: "_id",
+          foreignField: "sale_id",
+          as: "boms",
+          pipeline: [
             {
-              $lookup:{
-                from:"production-processes",
-                foreignField:"bom",
-                localField:"_id",
-                as:"production_processes",
-                pipeline:[
+              $lookup: {
+                from: "production-processes",
+                foreignField: "bom",
+                localField: "_id",
+                as: "production_processes",
+                pipeline: [
                   {
-                    $project:{
-                      processes:1
-                    }
-  
-                  }
-                ]
-              }
+                    $project: {
+                      processes: 1,
+                    },
+                  },
+                ],
+              },
             },
             {
-              $project:{
-                is_production_started:1,
-                production_processes:1,
-                bom_name:1,
-              }
-            }
-          ]
-        }
-       },
-       {
-        $lookup:{
-          from:"users",
-          localField:"user_id",
-          foreignField:"_id",
-          as:"user_id",
-          pipeline:[
+              $project: {
+                is_production_started: 1,
+                production_processes: 1,
+                bom_name: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "user_id",
+          pipeline: [
             {
-              $lookup:{
-                from:"user-roles",
-                foreignField:"_id",
-                localField:"role",
-                as:"role"
-              }
+              $lookup: {
+                from: "user-roles",
+                foreignField: "_id",
+                localField: "role",
+                as: "role",
+              },
             },
             {
-              $project:{
-                first_name:1,
-                role:1
-              }
-            }
-          ]
-        }
-       },
-       {
-        $lookup:{
-          from:"customers",
-          localField:"customer_id",
-          foreignField:"_id",
-          as:"customer_id",
-          pipeline:[
+              $project: {
+                first_name: 1,
+                role: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "customers",
+          localField: "customer_id",
+          foreignField: "_id",
+          as: "customer_id",
+          pipeline: [
             {
-              $project:{
-                full_name:1,
-              }
-            }
-          ]
-        }
-       },
-       {
-        $lookup:{
-          from:"products",
-          localField:"product_id",
-          foreignField:"_id",
-          as:"product_id",
-          pipeline:[
+              $project: {
+                full_name: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "product_id",
+          foreignField: "_id",
+          as: "product_id",
+          pipeline: [
             {
-              $project:{
-                name:1,
-                price:1
-              }
-            }
-          ]
-        }
-       },
-       {
+              $project: {
+                name: 1,
+                price: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
         $lookup: {
           from: "assineds",
           localField: "_id",
@@ -304,38 +318,37 @@ class PurchaseController {
         },
       },
       {
-        $lookup:{
-          from:"boms",
-          localField:"_id",
-          foreignField:"sale_id",
-          as:"boms",
-          pipeline:[
+        $lookup: {
+          from: "boms",
+          localField: "_id",
+          foreignField: "sale_id",
+          as: "boms",
+          pipeline: [
             {
-              $lookup:{
-                from:"production-processes",
-                foreignField:"bom",
-                localField:"_id",
-                as:"production_processes",
-                pipeline:[
+              $lookup: {
+                from: "production-processes",
+                foreignField: "bom",
+                localField: "_id",
+                as: "production_processes",
+                pipeline: [
                   {
-                    $project:{
-                      processes:1
-                    }
-  
-                  }
-                ]
-              }
+                    $project: {
+                      processes: 1,
+                    },
+                  },
+                ],
+              },
             },
             {
-              $project:{
-                is_production_started:1,
-                production_processes:1,
-                bom_name:1,
-              }
-            }
-          ]
-        }
-       },
+              $project: {
+                is_production_started: 1,
+                production_processes: 1,
+                bom_name: 1,
+              },
+            },
+          ],
+        },
+      },
     ])
       .sort({ _id: -1 })
       .skip(skip)
@@ -436,7 +449,7 @@ class PurchaseController {
   async graphData(req, res) {
     try {
       const purchases = await Purchase.find(
-        { payment_verify: true },  
+        { payment_verify: true },
         "price product_qty GST createdAt"
       );
 
@@ -478,7 +491,9 @@ class PurchaseController {
 
   async All(req, res) {
     try {
-      const totalSales = await Purchase.countDocuments({ payment_verify: true });
+      const totalSales = await Purchase.countDocuments({
+        payment_verify: true,
+      });
 
       res.status(200).json({
         success: true,
@@ -492,7 +507,6 @@ class PurchaseController {
       });
     }
   }
-
 
   async uploadPDF(req, res) {
     const { filename } = req.file;
@@ -567,7 +581,6 @@ class PurchaseController {
     const { id } = req.params;
     const { tracking_id, tracking_web } = req.body;
     console.log(req.body);
-    
 
     if (!tracking_web?.trim() || !tracking_id?.trim()) {
       return res.status(404).json({
@@ -591,7 +604,7 @@ class PurchaseController {
     });
   }
 
-  async Delivered(req,res) {
+  async Delivered(req, res) {
     const { filename } = req.file;
     const { id } = req.params;
 
@@ -617,8 +630,6 @@ class PurchaseController {
       message: "file uploaded successful",
     });
   }
-
 }
-
 
 exports.purchaseController = new PurchaseController();

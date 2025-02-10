@@ -45,6 +45,7 @@ const bomSchema = new Schema(
     bom_name: {
       type: String,
       required: [true, "BOM name is a required field"],
+      unique: true
     },
     parts_count: {
       type: Number,

@@ -9,6 +9,7 @@ const Purchases = new Schema({
   price: { type: Number, required: true,trim:true },
   product_qty: { type: Number, required: true,trim:true ,default:0 },
   GST: { type: Number, required: true,trim:true },
+  productFile: {type:String},
   designFile: {type:String},
   Status: { type: String, required: true,trim:true,default:"Pending" },
   customer_approve : {type:String,required:true,default:"Pending"},
