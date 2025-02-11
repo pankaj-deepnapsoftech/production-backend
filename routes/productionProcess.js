@@ -8,6 +8,7 @@ const {
   all,
   markDone,
   getAccountantData,
+  markStart,
 } = require("../controllers/process");
 const router = express.Router();
 
@@ -15,6 +16,7 @@ router.get("/accountant-data",isAuthenticated, getAccountantData);
 router.post("/", isAuthenticated, create);
 router.get("/all", isAuthenticated, all);
 router.get("/done/:_id", isAuthenticated, markDone);
+
 router
   .route("/:_id")
   .get(isAuthenticated, details)

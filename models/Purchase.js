@@ -24,7 +24,6 @@ const Purchases = new Schema({
   tracking_id:{type:String},
   tracking_web:{type:String},
   bom_id:{type:Schema.Types.ObjectId,ref:"BOM"},
-
 },{timestamps:true});
 
 exports.Purchase = model("purchase",Purchases)

@@ -185,6 +185,7 @@ exports.update = async (req, res) => {
       (pr) => pr._id.toString() === p._id.toString()
     );
     p.done = process.done;
+    p.start = process.start;
   });
   await productionProcess.save();
 
@@ -307,6 +308,7 @@ exports.markDone = TryCatch(async (req, res) => {
     message: "Production process has been marked done successfully",
   });
 });
+
 
 exports.getAccountantData = TryCatch(async (req,res) => {
   const data = await ProductionProcess.aggregate([

@@ -13,7 +13,7 @@ class PurchaseController {
       const newData = {
         ...data,
         user_id: req?.user._id,
-        productFile: productFilePath, 
+        productFile: productFilePath,
       };
 
       await Purchase.create(newData);
@@ -563,7 +563,7 @@ class PurchaseController {
 
   async VerifyPayement(req, res) {
     const { id } = req.params;
-    const { payment_verify } = req.body;
+    const { payment_verify, assignId } = req.body;
 
     const data = await Purchase.findById(id);
     if (!data) {
@@ -572,6 +572,17 @@ class PurchaseController {
       });
     }
     await Purchase.findByIdAndUpdate(id, { payment_verify });
+
+    // Find the Assign document by its ID and update the isCompleted status
+    const assign = await AssinedModel.findById(assignId);
+    if (!assign) {
+      return res.status(404).json({
+        message: "Assign data not found",
+      });
+    }
+
+    assign.isCompleted = "Complete";
+    await assign.save();
     return res.status(200).json({
       message: "Payment verified Successful",
     });
