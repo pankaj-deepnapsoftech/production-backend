@@ -591,7 +591,6 @@ class PurchaseController {
   async Dispatch(req, res) {
     const { id } = req.params;
     const { tracking_id, tracking_web } = req.body;
-    console.log(req.body);
 
     if (!tracking_web?.trim() || !tracking_id?.trim()) {
       return res.status(404).json({
@@ -641,6 +640,61 @@ class PurchaseController {
       message: "file uploaded successful",
     });
   }
+
+  async AddToken(req, res) {
+    const { id } = req.params;
+    const { token_amt } = req.body;
+
+    if (!token_amt) {
+      return res.status(404).json({
+        message: "token amount is required!",
+      });
+    }
+
+    if (!id) {
+      return res.status(404).json({
+        message: "couldn't access the sale!",
+      });
+    }
+
+    await Purchase.findByIdAndUpdate(id, {
+      token_amt,
+      token_status: false,
+    });
+
+    return res.status(200).json({
+      message: "Token Amount added for sample :)",
+    });
+  }
+
+  async uploadTokenSS(req, res) {
+    const { filename } = req.file;
+    const { id } = req.params;
+
+    if (!filename) {
+      return res.status(404).json({
+        message: "file not found",
+      });
+    }
+
+    const data = await Purchase.findById(id);
+    if (!data) {
+      return res.status(404).json({
+        message: "data not found",
+      });
+    }
+
+    const path = `https://inventorybackend.deepmart.shop/images/${filename}`;
+    await Purchase.findByIdAndUpdate(id, {
+      token_ss: path,
+      token_status: true
+    });
+    return res.status(200).json({
+      message: "file uploaded successful",
+    });
+  }
 }
+
+
 
 exports.purchaseController = new PurchaseController();

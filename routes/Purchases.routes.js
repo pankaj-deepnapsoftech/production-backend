@@ -73,4 +73,13 @@ route.patch(
   purchaseController.Delivered
 );
 
+route.patch("/addToken/:id", isAuthenticated, purchaseController.AddToken);
+
+route.patch(
+  "/tokenProof/:id",
+  isCustomerAuthenticated,
+  Imageupload.single("token_ss"),
+  purchaseController.uploadTokenSS
+);
+
 module.exports = route;

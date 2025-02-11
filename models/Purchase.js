@@ -24,6 +24,9 @@ const Purchases = new Schema({
   tracking_id:{type:String},
   tracking_web:{type:String},
   bom_id:{type:Schema.Types.ObjectId,ref:"BOM"},
+  token_amt:{type: Number},
+  token_status: {type: Boolean},
+  token_ss:{type: String},
 },{timestamps:true});
 
 exports.Purchase = model("purchase",Purchases)
