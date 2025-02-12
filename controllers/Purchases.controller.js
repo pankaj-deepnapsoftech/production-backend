@@ -687,7 +687,8 @@ class PurchaseController {
     const path = `https://inventorybackend.deepmart.shop/images/${filename}`;
     await Purchase.findByIdAndUpdate(id, {
       token_ss: path,
-      token_status: true
+      token_status: true,
+      isTokenVerify: false
     });
     return res.status(200).json({
       message: "file uploaded successful",
@@ -703,6 +704,28 @@ class PurchaseController {
     await Purchase.findByIdAndUpdate(id, {isSampleApprove: true})
     return res.status(200).json({
       message: "Sample is Approved :)",
+    });
+  }
+
+  async VerifyToken (req,res) {
+    const {id} = req.params;
+    const { assignId } = req.body;
+
+    if(!id){
+      return res.status(404).json({message: "Failed to get the sale data :("})
+    }
+
+    await Purchase.findByIdAndUpdate(id, { isTokenVerify: true});
+    const assign = await AssinedModel.findById(assignId);
+    if (!assign) {
+      return res.status(404).json({
+        message: "Assign data not found",
+      });
+    }
+
+    assign.isCompleted = "Complete";
+    return res.status(200).json({
+      message: "Token amount is verified :)",
     });
   }
 }

@@ -1,4 +1,5 @@
 const { AssinedModel } = require("../models/Assined-to.model");
+const { Notification } = require("../models/notification");
 const { TryCatch } = require("../utils/error");
 
 const assinedTask = TryCatch(async (req, res) => {
@@ -100,6 +101,7 @@ const getAssinedTask = TryCatch(async (req, res) => {
 const updateAssinedTask = TryCatch(async (req, res) => {
   const { id } = req.params;
   const value = req.body;
+  console.log(value);
   const data = await AssinedModel.findById(id);
   if (!data) {
     return res.status(404).json({
@@ -107,6 +109,13 @@ const updateAssinedTask = TryCatch(async (req, res) => {
     });
   }
   await AssinedModel.findByIdAndUpdate(id, value);
+
+  await Notification.create({
+    reciever_id: value?.assined_to, 
+    message: `Your ${value?.assined_process} task has been updated.`,
+  });
+
+
   return res.status(201).json({
     message: "Task Assined Updated",
   });

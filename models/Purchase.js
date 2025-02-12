@@ -32,6 +32,7 @@ const Purchases = new Schema(
     token_status: { type: Boolean },
     token_ss: { type: String },
     isSampleApprove: { type: Boolean },
+    isTokenVerify: {type: Boolean}
   },
   { timestamps: true }
 );
