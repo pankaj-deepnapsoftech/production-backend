@@ -82,4 +82,6 @@ route.patch(
   purchaseController.uploadTokenSS
 );
 
+route.patch("/approveSample/:id", isAuthenticated, purchaseController.ApproveSample);
+
 module.exports = route;
