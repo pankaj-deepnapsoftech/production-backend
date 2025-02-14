@@ -17,7 +17,7 @@ class PurchaseController {
       };
 
       await Purchase.create(newData);
-      
+
       return res.status(201).json({ message: "Purchase Order Generated" });
     } catch (error) {
       console.error("Error creating purchase:", error);
@@ -701,7 +701,7 @@ class PurchaseController {
       return res.status(404).json({message: "Failed to get the sale data :("})
     }
 
-    await Purchase.findByIdAndUpdate(id, {isSampleApprove: true})
+    await Purchase.findByIdAndUpdate(id, {isSampleApprove: true})                                                                                     
     return res.status(200).json({
       message: "Sample is Approved :)",
     });
@@ -723,7 +723,7 @@ class PurchaseController {
       });
     }
 
-    assign.isCompleted = "Complete";
+    assign.isCompleted = "Completed";
     return res.status(200).json({
       message: "Token amount is verified :)",
     });
