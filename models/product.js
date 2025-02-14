@@ -13,6 +13,18 @@ const productSchema = new Schema({
         maxlength: [40, "Product Name cannot exceed 40 characters"],
         lowerCase:true
     },
+    color: {
+        type: String,        
+        minlength: [2, "Product Color Name should be atleast 2 characters long"],
+        maxlength: [40, "Product Color Name cannot exceed 40 characters"],
+        lowerCase:true
+    },
+    code: {
+        type: String,
+        minlength: [2, "Product Code should be atleast 2 characters long"],
+        maxlength: [40, "Product Code cannot exceed 40 characters"],
+        lowerCase:true
+    },
     product_id: {
         type: String,
         required: [true, "Product Id is a required field"],

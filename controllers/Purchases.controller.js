@@ -17,7 +17,7 @@ class PurchaseController {
       };
 
       await Purchase.create(newData);
-
+      
       return res.status(201).json({ message: "Purchase Order Generated" });
     } catch (error) {
       console.error("Error creating purchase:", error);

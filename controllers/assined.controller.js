@@ -10,12 +10,17 @@ const assinedTask = TryCatch(async (req, res) => {
       message:"task is already assined"
     })
   }
-  await AssinedModel.create({...data,assined_by:req?.user._id});
+  const value = await AssinedModel.create({...data,assined_by:req?.user._id});
+
+  await Notification.create({
+    reciever_id: value?.assined_to, 
+    message: `New task assigned -  ${value?.assined_process}.`,
+  });
+
   return res.status(201).json({
     message: "Task assined Successful",
   });
-});
-
+});                                                                                                                                                                                         
 const getAssinedTask = TryCatch(async (req, res) => {
   const { _id } = req.user;
   const page = parseInt(req.query.page) || 1;
