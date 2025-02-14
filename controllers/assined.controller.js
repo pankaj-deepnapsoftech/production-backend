@@ -106,14 +106,18 @@ const getAssinedTask = TryCatch(async (req, res) => {
 const updateAssinedTask = TryCatch(async (req, res) => {
   const { id } = req.params;
   const value = req.body;
-  console.log(value);
   const data = await AssinedModel.findById(id);
   if (!data) {
     return res.status(404).json({
       message: "data not found",
     });
   }
-  await AssinedModel.findByIdAndUpdate(id, value);
+
+  const updatedValue = {
+    ...value,
+    isCompleted: "Pending"
+  }
+  await AssinedModel.findByIdAndUpdate(id, updatedValue);
 
   await Notification.create({
     reciever_id: value?.assined_to, 

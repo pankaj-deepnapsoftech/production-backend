@@ -12,7 +12,7 @@ exports.isAllowed = TryCatch(async (req, res, next) => {
     }
 
     const permissions = user.role?.permissions;
-    console.log(permissions);
+
     
     if (!permissions || permissions.length === 0 || !permissions.includes(route)) {
         throw new ErrorHandler('You are not allowed to access this route', 401);
