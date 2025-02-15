@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.get('/', isAuthenticated, NotificationController.prototype.getNotify);
 
-router.patch('/update/:id', isAuthenticated, NotificationController.prototype.updateNotify);
+router.patch('/updateAll', isAuthenticated, NotificationController.prototype.updateNotify);
 
 module.exports = router;
