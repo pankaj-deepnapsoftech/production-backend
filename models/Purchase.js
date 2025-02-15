@@ -27,12 +27,11 @@ const Purchases = new Schema(
     payment_verify: { type: Boolean },
     tracking_id: { type: String },
     tracking_web: { type: String },
-    bom_id: { type: Schema.Types.ObjectId, ref: "BOM" },
     token_amt: { type: Number },
     token_status: { type: Boolean },
     token_ss: { type: String },
     isSampleApprove: { type: Boolean },
-    isTokenVerify: {type: Boolean}
+    isTokenVerify: { type: Boolean },
   },
   { timestamps: true }
 );

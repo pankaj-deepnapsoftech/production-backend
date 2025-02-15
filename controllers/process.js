@@ -308,6 +308,25 @@ exports.markDone = TryCatch(async (req, res) => {
     message: "Production process has been marked done successfully",
   });
 });
+// exports.markUndone = TryCatch(async (req, res) => {
+//   const { _id } = req.params;
+//   if (!_id) {
+//     throw new ErrorHandler("Id not provided", 400);
+//   }
+//   const productionProcess = await ProductionProcess.findById(_id);
+//   if (!productionProcess) {
+//     throw new ErrorHandler("Production process doesn't exist", 400);
+//   }
+
+//   productionProcess.status = "completed";
+//   await productionProcess.save();
+
+//   res.status(200).json({
+//     status: 200,
+//     success: true,
+//     message: "Production process has been marked done successfully",
+//   });
+// });
 
 
 exports.getAccountantData = TryCatch(async (req,res) => {

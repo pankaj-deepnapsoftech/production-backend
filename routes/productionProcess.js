@@ -16,6 +16,7 @@ router.get("/accountant-data",isAuthenticated, getAccountantData);
 router.post("/", isAuthenticated, create);
 router.get("/all", isAuthenticated, all);
 router.get("/done/:_id", isAuthenticated, markDone);
+// router.get("/undone/:_id", isAuthenticated, markUndone);
 
 router
   .route("/:_id")
