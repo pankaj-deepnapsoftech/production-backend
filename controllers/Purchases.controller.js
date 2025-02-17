@@ -523,7 +523,7 @@ class PurchaseController {
         message: "data not found",
       });
     }
-    const path = `https://inventorybackend.deepmart.shop/images/${filename}`;
+    const path = `https://rtpasbackend.deepmart.shop/images/${filename}`;
     await Purchase.findByIdAndUpdate(id, {
       invoice: path,
       paymet_status: "Pending",
@@ -550,7 +550,7 @@ class PurchaseController {
       });
     }
 
-    const path = `https://inventorybackend.deepmart.shop/images/${filename}`;
+    const path = `https://rtpasbackend.deepmart.shop/images/${filename}`;
     await Purchase.findByIdAndUpdate(id, {
       customer_pyement_ss: path,
       paymet_status: "Paied",
@@ -684,7 +684,7 @@ class PurchaseController {
       });
     }
 
-    const path = `https://inventorybackend.deepmart.shop/images/${filename}`;
+    const path = `https://rtpasbackend.deepmart.shop/images/${filename}`;
     await Purchase.findByIdAndUpdate(id, {
       token_ss: path,
       token_status: true,
