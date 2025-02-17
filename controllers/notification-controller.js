@@ -2,29 +2,28 @@ const { Notification } = require("../models/notification");
 
 class NotificationController {
 
-    async getNotify(req, res) {
+  async getNotify(req, res) {
     const { _id } = req.user;
-
+  
     try {
-      const data = await Notification.find({ reciever_id: _id }).sort({
-        createdAt: -1,
-      });
-
+    
+      const data = await Notification.find({ reciever_id: _id })
+        .sort({ createdAt: -1 }) 
+        .limit(5); 
+  
       if (data.length === 0) {
         return res.status(404).json({ message: "No notifications found." });
       }
-
+  
       return res.status(200).json({ data });
     } catch (error) {
-      return res
-        .status(500)
-        .json({
-          message: "Something went wrong :(",
-          error: error.message || error,
-        });
+      return res.status(500).json({
+        message: "Something went wrong :(",
+        error: error.message || error,
+      });
     }
   }
-
+  
   async updateNotify (req,res){
 
     try {

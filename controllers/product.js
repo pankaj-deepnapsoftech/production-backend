@@ -119,10 +119,14 @@ exports.bulkUploadHandler = async (req, res) => {
         fs.unlink(req.file.path, () => { });
 
         await checkProductCsvValidity(response);
-
         const products = response;
 
-        await Product.insertMany(products);
+        const updatedProducts = products.map(product => ({
+          ...product,
+          approved: req.user.isSuper,
+        }));
+        
+        await Product.insertMany(updatedProducts);
 
         res.status(200).json({
           status: 200,
