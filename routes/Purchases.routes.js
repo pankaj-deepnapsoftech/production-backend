@@ -36,6 +36,11 @@ route.patch(
   Imageupload.single("image"),
   purchaseController.Imagehandler
 );
+
+
+
+
+
 route.patch(
   "/approve-status/:id",
   isCustomerAuthenticated,
@@ -46,6 +51,12 @@ route.patch(
   isCustomerAuthenticated,
   purchaseController.updateDesignStatus
 );
+
+route.patch(
+  "/sales_design_status/:id",
+  purchaseController.sales_design_status
+);
+
 route.get("/sales-graph", isAuthenticated, purchaseController.graphData);
 route.get("/all", isAuthenticated, purchaseController.All);
 route.patch(
@@ -74,6 +85,8 @@ route.patch(
 );
 
 route.patch("/addToken/:id", isAuthenticated, purchaseController.AddToken);
+
+route.patch("/updatesales/:id", isAuthenticated, purchaseController.updatesale);
 
 route.patch(
   "/tokenProof/:id",

@@ -402,6 +402,8 @@ class PurchaseController {
     });
   }
 
+  
+
   async UpdateStatus(req, res) {
     const { Status } = req.body;
     const { id } = req.params;
@@ -441,6 +443,37 @@ class PurchaseController {
         isCompleted: "Design Rejected",
       });
     }
+    return res.status(201).json({
+      message: "Status Approved Successful",
+    });
+  }
+
+
+  async sales_design_status(req, res) {
+    // const { sale_design_approve, sale_design_comment, assined_to } = req.body;
+    const { sale_design_approve, sale_design_comment } = req.body;
+    const { id } = req.params;
+    if (!sale_design_approve) {
+      return res.status(400).json({
+        message: "customer is required",
+      });
+    }
+
+    const find = await Purchase.findById(id);
+    if (!find) {
+      return res.status(404).json({
+        message: "Data not found",
+      });
+    }
+    await Purchase.findByIdAndUpdate(id, {
+      sale_design_approve,
+      sale_design_comment,
+    });
+    // if (sale_approve !== "Approve") {
+    //   await AssinedModel.findByIdAndUpdate(assined_to, {
+    //     isCompleted: "Design Rejected",
+    //   });
+    // }
     return res.status(201).json({
       message: "Status Approved Successful",
     });
@@ -727,6 +760,21 @@ class PurchaseController {
       message: "Token amount is verified :)",
     });
   }
+
+  async updatesale(req, res) {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(404).json({ message: "Failed to get the sale data :(" })
+    }
+
+    await Purchase.findByIdAndUpdate(id,  req.body)
+    return res.status(200).json({
+      message: "Sample is Approved :)",
+    });
+  }
+
+  
+
 }
 
 

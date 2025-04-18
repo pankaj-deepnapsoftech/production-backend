@@ -15,6 +15,7 @@ const Purchases = new Schema(
     GST: { type: Number, required: true, trim: true },
     productFile: { type: String },
     designFile: { type: String },
+    
     Status: { type: String, required: true, trim: true, default: "Pending" },
     customer_approve: { type: String, required: true, default: "Pending" },
     comment: { type: String, trim: true },
@@ -32,6 +33,14 @@ const Purchases = new Schema(
     token_ss: { type: String },
     isSampleApprove: { type: Boolean },
     isTokenVerify: { type: Boolean },
+
+    discount: { type: String },
+    salestatus: { type: String, trim: true, },
+    salestatus_comment: { type: String, trim: true, },
+    sale_design_approve: { type: String, trim: true, },
+    sale_design_comment: { type: String, trim: true, },
+
+
   },
   { timestamps: true }
 );
