@@ -4,6 +4,10 @@ const BOMRawMaterial = require("../models/bom-raw-material");
 const BOMScrapMaterial = require("../models/bom-scrap-material");
 const Product = require("../models/product");
 const { TryCatch, ErrorHandler } = require("../utils/error");
+const { default: axios } = require("axios");
+const { Purchase } = require("../models/Purchase");
+const mongoose = require("mongoose");
+const { AssinedModel } = require("../models/Assined-to.model");
 
 exports.create = TryCatch(async (req, res) => {
   const processData = req.body;
@@ -77,6 +81,7 @@ exports.create = TryCatch(async (req, res) => {
 });
 exports.update = async (req, res) => {
   const { _id, status, bom } = req.body;
+
   const productionProcess = await ProductionProcess.findById(_id);
 
   if (!productionProcess) {
@@ -302,6 +307,56 @@ exports.markDone = TryCatch(async (req, res) => {
   productionProcess.status = "completed";
   await productionProcess.save();
 
+  const data = await ProductionProcess.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(_id)
+      }
+    },
+    {
+      $lookup:{
+        from:"boms",
+        localField:"bom",
+        foreignField:"_id",
+        as:"bom",
+        pipeline:[
+          {
+            $lookup:{
+              from:"purchases",
+              localField:"sale_id",
+              foreignField:"_id",
+              as:"sale_id",
+              pipeline:[
+                {
+                  $lookup:{
+                    from:"assineds",
+                    localField:"_id",
+                    foreignField:"sale_id",
+                    as:"assined",
+                    pipeline:[
+                      {
+                        $match:{
+                          assined_to:req.user?._id
+                        }
+                      },
+                      {
+                        $project:{
+                          assined:1
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+        ]
+      }
+    }
+  ])
+  const id = data[0].bom[0].sale_id[0].assined[0]._id;
+  await AssinedModel.findByIdAndUpdate(id,{isCompleted:"Completed"});
+
   res.status(200).json({
     status: 200,
     success: true,
@@ -461,7 +516,7 @@ exports.getAccountantData = TryCatch(async (req, res) => {
     },
     {
       $group: {
-        _id: "$bom.sale_id", 
+        _id: "$bom.sale_id",
         bom: { $first: "$bom" },
         creator: { $first: "$creator" },
         item: { $first: "$item" },
