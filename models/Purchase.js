@@ -12,7 +12,7 @@ const Purchases = new Schema(
     product_type: { type: String, required: true, trim: true },
     price: { type: Number, required: true, trim: true },
     product_qty: { type: Number, required: true, trim: true, default: 0 },
-    GST: { type: Number, required: true, trim: true },
+    GST: { type: Number, trim: true },
     productFile: { type: String },
     designFile: { type: String },
     
